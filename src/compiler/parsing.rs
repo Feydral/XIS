@@ -1,5 +1,4 @@
-use crate::virtual_file::VirtualFile;
-use crate::killer::{self, Error};
+use crate::compiler::{killer::{self, Error}, virtual_file::VirtualFile};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Mnemonic { NOP, HLT, ADD, SUB, MUL, DIV, REM, AND, NAND, OR, NOR, XOR, XNOR, NOT, RSH, LSH, LDI, ADDI, SUBI, MULI, DIVI, JMP, BRH, CALL, RET, MLD, MSTR, DRW, PSHB, PAD, RNG, }

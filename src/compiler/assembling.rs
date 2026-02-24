@@ -1,4 +1,4 @@
-use crate::parsing::*;
+use crate::compiler::parsing::{Mnemonic, Operand};
 
 fn opcode(m: &Mnemonic) -> u32 {
     match m {
