@@ -1,6 +1,6 @@
 ## Xis – An Xperimental Instruction Set
 
-Xis is an experimental instruction set architecture (ISA) inspired by a [video](https://www.youtube.com/watch?v=hAZEXqWLTmY) from [Mattbatwings](https://github.com/mattbatwings).
+Xis is an experimental instruction set architecture (for a potential 16 bit computer) inspired by a [video](https://www.youtube.com/watch?v=hAZEXqWLTmY) from [Mattbatwings](https://github.com/mattbatwings).
 
 Xis can be imagined as the instruction set for a simple, Game Boy–like system — compact, focused, and intentionally made for games.
 
