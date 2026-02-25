@@ -1,4 +1,4 @@
-## Xis – An *X*perimental *I*nstruction *S*et
+## Xis – An **X**perimental **I**nstruction **S**et
 
 Xis is an experimental instruction set architecture (ISA) inspired by a [video](https://www.youtube.com/watch?v=hAZEXqWLTmY) from [Mattbatwings](https://github.com/mattbatwings).
 

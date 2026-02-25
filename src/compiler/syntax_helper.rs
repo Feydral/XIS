@@ -53,7 +53,9 @@ pub fn parse_line(line: &str, line_number: usize) -> Result<Instruction, ParseEr
         "PSHB" => Instruction::PushBuffer,
         "PAD"  => Instruction::ControllerPad         { reg_a: to_register(split[1])? },
         "RNG"  => Instruction::RandomNumberGenerator { reg_a: to_register(split[1])? },
-    }
+    };
+
+    Ok(instruction)
 }
 
 fn to_register(s: &str) -> Result<u8, ParseError> {
