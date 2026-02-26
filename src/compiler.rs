@@ -24,9 +24,6 @@ pub fn compile(source: &[String], format: OutputFormat) -> Result<Vec<String>, C
             OutputFormat::Assembly => {
                 output.push(assembler::generate_assembly_code(instruction));
             }
-            OutputFormat::Instructions => {
-                output.push(assembler::generate_instruction_code(instruction));
-            }
         }
     }
 
@@ -37,5 +34,4 @@ pub enum OutputFormat {
     Binary,
     Hex,
     Assembly,
-    Instructions,
 }
