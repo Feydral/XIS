@@ -24,7 +24,5 @@ fn main() {
         }
     };
 
-    for line in output {
-        println!("{line}");
-    }
+    let _ = io_helper::write_to_file("../xis/examples/output/output.c16", output);
 }

@@ -4,7 +4,7 @@
 
 ///---------------- General ----------------///
 
-// r0 is a Zero-Register - it always reads 0, no matter what. If you store sth in r0, the information is lost.
+// r0 is a Zero-Register - it always reads 0, no matter what. If you store something in r0, the information is lost.
 LDI r0 10
 LDI r1 3
 
