@@ -1,6 +1,6 @@
 use crate::errors::CompileError;
 
-pub mod syntax_helper;
+pub mod parser;
 pub mod assembler;
 
 
@@ -12,7 +12,7 @@ pub fn compile(source: &[String], format: OutputFormat) -> Result<Vec<String>, C
             continue;
         }
 
-        let instruction = syntax_helper::parse_line(line, ln)?;
+        let instruction = parser::parse_line(line, ln)?;
 
         match format {
             OutputFormat::Binary => {
