@@ -17,4 +17,23 @@ impl Byte3 {
             c: (value & 0xFF) as u8,
         }
     }
+
+    pub fn modify(&mut self, index: usize, value: u8) -> &mut Self {
+        let value = (value != 0) as u8;
+
+        let (byte, bit) = match index {
+            0..=7 => (&mut self.c, index),
+            8..=15 => (&mut self.b, index - 8),
+            16..=23 => (&mut self.a, index - 16),
+            _ => panic!("Bit index out of range for Byte3: {}", index),
+        };
+
+        if value == 1 {
+            *byte |= 1 << bit;
+        } else {
+            *byte &= !(1 << bit);
+        }
+
+        self
+    }
 }

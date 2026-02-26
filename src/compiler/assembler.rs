@@ -1,8 +1,19 @@
 use crate::{instruction::{self, Instruction}, math::numerics::byte3::Byte3};
 
+pub fn generate_instruction_code(instruction: Instruction) -> String {
+    todo!()
+}
 
-pub fn generate_c16_code(instruction: Instruction) -> Byte3 {
-    Byte3::new(0, 0, 0)
+pub fn generate_assembly_code(instruction: Instruction) -> String {
+    todo!()
+}
+
+pub fn generate_hex_code(instruction: Instruction) -> String {
+    todo!()
+}
+
+pub fn generate_binary_code(instruction: Instruction) -> String {
+    todo!()
 }
 
 pub fn get_opcode(instruction: &Instruction) -> u8 {

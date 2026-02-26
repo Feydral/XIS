@@ -1,0 +1,36 @@
+///---------------- Memory ----------------///
+
+// Load 40 into register 2
+LDI r2 40
+
+// Add 3 to register 2
+ADDI r2 3
+
+// Load some values
+LDI r1 4
+LDI r3 50
+LDI r4 13
+
+// Load a value as memory address ptr
+LDI r7 40
+
+// Store the values in memory and use offsets to store them quickly next to eachother
+MSTR r7 r1 0
+MSTR r7 r2 1
+MSTR r7 r3 2
+MSTR r7 r4 3
+
+/// Register:
+/// r1: 4
+/// r2: 43
+/// r3: 50
+/// r4: 13
+/// r5: 0
+/// r6: 0
+/// r7: 40
+
+/// Memory (Only addresses we accessed)
+/// 40: 4
+/// 41: 43
+/// 42: 50
+/// 43: 13

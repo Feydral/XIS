@@ -24,3 +24,8 @@ pub fn xy_to_index(x: u32, y: u32, width: u32, height: u32) -> u32 {
 pub fn bool_to_int(b: bool) -> i32 {
     if b { 1 } else { 0 }
 }
+
+#[inline]
+pub fn clamp01(a: u32) -> u32 {
+    a.max(0).min(1)
+}
