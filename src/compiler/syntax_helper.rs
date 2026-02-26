@@ -32,7 +32,7 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, CompileError> {
         "NOT"  => Instruction::BitwiseNot            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
         "RSH"  => Instruction::RightShift            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
         "LSH"  => Instruction::LeftShift             { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
-        "SHF"  => Instruction::Shift                 { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
+        "ROL"  => Instruction::Roll                  { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
         "LDI"  => Instruction::LoadImmediate         { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
         "ADDI" => Instruction::AddImmediate          { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
         "SUBI" => Instruction::SubtractImmediate     { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },

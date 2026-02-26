@@ -1,3 +1,82 @@
+///---------------- Introduction ----------------///
+// TODO
+
+
+///---------------- General ----------------///
+
+// r0 is a Zero-Register - it always reads 0, no matter what. If you store sth in r0, the information is lost.
+LDI r0 10
+LDI r1 3
+
+ADD r0 r1 r4
+
+/// Register:
+/// r0: 0 (like I said)
+/// r1: 3
+/// r2: 0
+/// r3: 0
+/// r4: 3
+/// r5: 0
+/// r6: 0
+/// r7: 0
+
+
+///---------------- (ALU) Operations ----------------///
+
+// r2 = r0 + r1
+ADD r0 r1 r2
+
+// r2 = r0 - r1
+SUB r0 r1 r2
+
+// Integer Multiplication
+// r2 = r0 * r1
+MUL r0 r1 r2
+
+// Integer Division
+// r2 = r0 / r1
+DIV r0 r1 r2
+
+// r2 = r0 % r1
+REM r0 r1 r2
+
+
+// Bitwise Operations:
+
+// r2 = r0 & r1
+AND r0 r1 r2
+
+// r2 = !(r0 % r1)
+NAND r0 r1 r2
+
+// r2 = r0 | r1
+OR r0 r1 r2
+
+// r2 = !(r0 | r1)
+NOR r0 r1 r2
+
+// r2 = r0 ^ r1
+XOR r0 r1 r2
+
+// r2 = !(r0 ^ r1)
+XNOR r0 r1 r2
+
+// r2 = !r1 (only 1 operand needed)
+NOT r1 r2
+
+
+// Shift Operations:
+
+// Left Shift: r2 = r1 << 1
+LSH r1 r2
+
+// Right Shift: r2 = r1 >> 1
+RSH r1 r2
+
+// Roll (Circular Shift): r2 = (r0 >> r1) | (r0 << (n - r1))
+ROL r0 r1 r2
+
+
 ///---------------- Memory ----------------///
 
 // Load 40 into register 2

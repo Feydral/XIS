@@ -1,4 +1,4 @@
-use crate::{instruction::{self, Instruction}, math::numerics::byte3::Byte3};
+use crate::instruction::Instruction;
 
 pub fn generate_assembly_code(instruction: Instruction) -> String {
     match instruction {
@@ -18,8 +18,8 @@ pub fn generate_assembly_code(instruction: Instruction) -> String {
         Instruction::BitwiseNot { reg_a, reg_b } => format!("NOT r{}, r{}", reg_a, reg_b),
         Instruction::RightShift { reg_a, reg_b } => format!("RSH r{}, r{}", reg_a, reg_b),
         Instruction::LeftShift { reg_a, reg_b } => format!("LSH r{}, r{}", reg_a, reg_b),
-        Instruction::Shift { reg_a, reg_b, reg_c } => format!("SHF r{}, r{}, r{}", reg_a, reg_b, reg_c),
-        Instruction::LoadImmediate { reg_a, immediate } => format!("LIMM r{}, {}", reg_a, immediate),
+        Instruction::Roll { reg_a, reg_b, reg_c } => format!("ROL r{}, r{}, r{}", reg_a, reg_b, reg_c),
+        Instruction::LoadImmediate { reg_a, immediate } => format!("LDI r{}, {}", reg_a, immediate),
         Instruction::AddImmediate { reg_a, immediate } => format!("ADDI r{}, {}", reg_a, immediate),
         Instruction::SubtractImmediate { reg_a, immediate } => format!("SUBI r{}, {}", reg_a, immediate),
         Instruction::MultiplyImmediate { reg_a, immediate } => format!("MULI r{}, {}", reg_a, immediate),
@@ -63,7 +63,7 @@ pub fn get_opcode(instruction: &Instruction) -> u8 {
         Instruction::BitwiseNot { .. }            => 0b01101,
         Instruction::RightShift { .. }            => 0b01110,
         Instruction::LeftShift { .. }             => 0b01111,
-        Instruction::Shift { .. }                 => 0b10000,
+        Instruction::Roll { .. }                  => 0b10000,
         Instruction::LoadImmediate { .. }         => 0b10001,
         Instruction::AddImmediate { .. }          => 0b10010,
         Instruction::SubtractImmediate { .. }     => 0b10011,
