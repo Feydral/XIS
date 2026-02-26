@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 #[derive(Copy, Clone, Debug, PartialEq, Default)]
 pub struct Byte3 {
     pub a: u8,
