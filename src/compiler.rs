@@ -4,7 +4,7 @@ pub mod syntax_helper;
 pub mod assembler;
 
 
-pub fn compile(source: &str) -> Result<Vec<u8>, CompileError> {
+pub fn compile(source: &str) -> Result<Vec<(u8, u8, u8)>, CompileError> {
     let mut bytecode = Vec::new();
 
     for (ln, line) in source.lines().enumerate() {
@@ -12,4 +12,11 @@ pub fn compile(source: &str) -> Result<Vec<u8>, CompileError> {
     }
 
     Ok(bytecode)
+}
+
+pub enum OutputFormat {
+    Binary,
+    Hex,
+    Assembly,
+    Instructions,
 }

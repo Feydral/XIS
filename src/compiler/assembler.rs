@@ -1,9 +1,8 @@
-use crate::instruction::{self, Instruction};
+use crate::{instruction::{self, Instruction}, math::numerics::byte3::Byte3};
 
 
-pub fn generate_c16_code(instruction: Instruction) -> (u8, u8, u8) {
-    let bytes: (u8, u8, u8) = (0, 0, 0);
-    bytes
+pub fn generate_c16_code(instruction: Instruction) -> Byte3 {
+    Byte3::new(0, 0, 0)
 }
 
 pub fn get_opcode(instruction: &Instruction) -> u8 {
