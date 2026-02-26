@@ -25,4 +25,6 @@ The VM uses the [minifb](https://github.com/emoon/rust_minifb) library for a sim
 
 ### Status
 
-**Xis is experimental and subject to change. The instruction set, compiler, and VM may evolve as the design is refined.**
+Xis is experimental and subject to change. The instruction set, compiler, and VM may evolve as the design is refined.
+If you have any suggestions or tips, or want to contribute, add me on Discord: "feathertech". I think Discord is better since I don't check my emails that often :>.
+Also, if you've written a script in xis16, I'd be extremely happy if you could show it to me!
