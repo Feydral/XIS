@@ -33,3 +33,9 @@ pub fn bool_to_int(b: bool) -> u32 {
 pub fn clamp01(a: u32) -> u32 {
     a.max(0).min(1)
 }
+
+#[doc = "Turns a u8 into a binary String."]
+#[inline]
+pub fn int_to_binary_string(byte: u64, len: usize) -> String {
+    format!("{:0width$b}", byte, width = len)
+}

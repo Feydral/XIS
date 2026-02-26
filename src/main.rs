@@ -16,7 +16,7 @@ fn main() {
         }
     };
 
-    let output = match compiler::compile(&source, OutputFormat::Assembly) {
+    let output = match compiler::compile(&source, OutputFormat::Binary) {
         Ok(o) => o,
         Err(e) => {
             eprintln!("Compile error: {e}");
