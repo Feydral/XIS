@@ -16,6 +16,7 @@ pub enum Instruction {
     BitwiseNot            { reg_a: u8, reg_b: u8 },
     RightShift            { reg_a: u8, reg_b: u8 },
     LeftShift             { reg_a: u8, reg_b: u8 },
+    Shift                 { reg_a: u8, reg_b: u8, reg_c: u8 },
     LoadImmediate         { reg_a: u8, immediate: u16 },
     AddImmediate          { reg_a: u8, immediate: u16 },
     SubtractImmediate     { reg_a: u8, immediate: u16 },
