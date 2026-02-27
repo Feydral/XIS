@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, Write, stdin, stdout};
 use std::path::Path;
 
 pub fn load_from_file(path: &str) -> Result<Vec<String>, std::io::Error> {
@@ -43,4 +43,14 @@ pub fn write_to_file(path: &str, data: Vec<String>) -> Result<(), std::io::Error
     }
 
     Ok(())
+}
+
+pub fn read_line(prompt: &str) -> String {
+    print!("{}", prompt);
+    stdout().flush().expect("Console-flushing failed.");
+
+    let mut input = String::new();
+    stdin().read_line(&mut input).expect("Console input failed.");
+
+    input
 }
