@@ -6,6 +6,7 @@ mod math;
 mod io_helper;
 mod errors;
 mod instruction;
+mod hardware;
 
 fn main() {
     let source = match io_helper::load_from_file("../xis/examples/program.xis16") {
@@ -16,10 +17,10 @@ fn main() {
         }
     };
 
-    let output = match compiler::compile(&source, OutputFormat::Binary) {
+    let output = match compiler::compile(&source, OutputFormat::Assembly) {
         Ok(o) => o,
         Err(e) => {
-            eprintln!("Compile error: {e}");
+            eprintln!("{e}");
             return;
         }
     };

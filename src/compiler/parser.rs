@@ -1,6 +1,8 @@
-use crate::{errors::CompileError, instruction::Instruction};
+use std::error::Error;
 
-pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, CompileError> {
+use crate::{errors::{CompileError, SyntaxError}, hardware, instruction::Instruction};
+
+pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
 	let line = line
         .split("//")
         .next()
@@ -8,12 +10,14 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, CompileError> {
         .trim();
 
 	if line.is_empty() {
-		return Err(CompileError::new("Empty line", ln));
+		return Err(Box::new(CompileError::new("Empty line", ln)));
 	}
 
-	let mut split = Vec::with_capacity(5);
-    split.extend(line.split_whitespace().take(5));
-    split.resize(5, "");
+	let mut split = Vec::with_capacity(4);
+    split.extend(line.split_whitespace().take(4));
+    split.resize(4, "");
+
+    check_syntax(&split, ln)?;
 
     let instruction = match split[0].to_uppercase().as_str() {
         "NOP"  => Instruction::NoOperation,
@@ -44,11 +48,11 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, CompileError> {
         "RET"  => Instruction::Return,
         "MLD"  => Instruction::MemoryLoad            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? },
         "MSTR" => Instruction::MemoryStore           { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? },
-        "DRW"  => Instruction::Draw                  { reg_x: to_reg(split[1], ln)?, reg_y: to_reg(split[2], ln)?, reg_r: to_reg(split[3], ln)?, reg_g: to_reg(split[4], ln)?, reg_b: to_reg(split[5], ln)? },
+        "DRW"  => Instruction::Draw                  { reg_x: to_reg(split[1], ln)?, reg_y: to_reg(split[2], ln)?, reg_rgb: to_reg(split[3], ln)? },
         "PSHB" => Instruction::PushBuffer,
         "PAD"  => Instruction::ControllerPad         { reg_a: to_reg(split[1], ln)? },
         "RNG"  => Instruction::RandomNumberGenerator { reg_a: to_reg(split[1], ln)? },
-        _ => return Err(CompileError::new("Invalid mnemonic", ln)),
+        _ => return Err(Box::new(CompileError::new("Invalid mnemonic", ln))),
     };
 
     Ok(instruction)
@@ -70,18 +74,18 @@ fn to_reg(s: &str, ln: usize) -> Result<u8, CompileError> {
 fn to_immediate(s: &str, ln: usize) -> Result<u16, CompileError> {
     let value = s.parse::<u16>().map_err(|_| CompileError::new("Immediate value must be a number between 0 and 65535", ln))?;
     Ok(value)
-}
+} 
 
 fn to_offset(s: &str, ln: usize) -> Result<u8, CompileError> {
-    let value = s.parse::<u8>().map_err(|_| CompileError::new("Offset value must be a number between 0 and 255", ln))?;
+    let value = s.parse::<u8>().map_err(|_| CompileError::new(format!("Offset value must be a number between 0 and {}", hardware::MAX_MEMORY_OFFSET), ln))?;
     Ok(value)
 }
 
 fn to_instr_addr(s: &str, ln: usize) -> Result<u16, CompileError> {
-    let value = s.parse::<u16>().map_err(|_| CompileError::new("Address value must be a number between 0 and 4095", ln))?;
+    let value = s.parse::<u16>().map_err(|_| CompileError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
     
-    if value > 4095 {
-        return Err(CompileError::new("Address value must be a number between 0 and 4095", ln));
+    if value >= hardware::INSTRUCTION_MEM_SIZE as u16 {
+        return Err(CompileError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln));
     }
 
     Ok(value)
@@ -89,10 +93,57 @@ fn to_instr_addr(s: &str, ln: usize) -> Result<u16, CompileError> {
 
 fn to_flag(s: &str, ln: usize) -> Result<u8, CompileError> {
     let value = match s {
-        "Carry" => 0b001,
-        "Zero" => 0b010,
-        _ => return Err(CompileError::new("Invalid condition flag. Must be one of 'Carry', 'Zero'", ln)),
+        "CF" => hardware::CARRY_FLAG_BINARY as u8,
+        "ZF" => hardware::ZERO_FLAG_BINARY as u8,
+        "OF" => hardware::OVERFLOW_FLAG_BINARY as u8,
+        _ => return Err(CompileError::new("Invalid condition flag. Must be one of 'CF', 'ZF', 'OF'", ln)),
     };
 
     Ok(value)
+}
+
+
+fn check_syntax(split: &[&str], ln: usize) -> Result<(), SyntaxError> {
+    let mnemonic = split[0].to_uppercase();
+    let (m, ok) = match mnemonic.as_str() {
+        m @ "NOP"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "HLT"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "ADD"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "SUB"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "MUL"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "DIV"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "REM"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "AND"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "NAND" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "OR"   => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "NOR"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "XOR"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "XNOR" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "NOT"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "RSH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "LSH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "ROL"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "LDI"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "ADDI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "SUBI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "MULI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "DIVI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "JMP"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "BRH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
+        m @ "CALL" => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "RET"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "MLD"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "MSTR" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "DRW"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
+        m @ "PSHB" => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "PAD"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ "RNG"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
+        m @ _ => return Err(SyntaxError::new(format!("Unknown mnemonic '{}'", m), ln)),
+    };
+
+    if ok {
+        return Ok(());
+    }
+
+    Err(SyntaxError::new(format!("Mnemonic '{}' has wrong operands", m), ln))
 }

@@ -30,7 +30,7 @@ pub enum Instruction {
     Return,
     MemoryLoad            { reg_a: u8, reg_b: u8, offset: u8 },
     MemoryStore           { reg_a: u8, reg_b: u8, offset: u8 },
-    Draw                  { reg_x: u8, reg_y: u8, reg_r: u8, reg_g: u8, reg_b: u8 },
+    Draw                  { reg_x: u8, reg_y: u8, reg_rgb: u8 },
     PushBuffer,
     ControllerPad         { reg_a: u8 },
     RandomNumberGenerator { reg_a: u8 },
@@ -93,12 +93,10 @@ impl Instruction {
                 bits |= *offset as u32 & 0xFF;
             }
 
-            Instruction::Draw { reg_x, reg_y, reg_r, reg_g, reg_b } => {
+            Instruction::Draw { reg_x, reg_y, reg_rgb } => {
                 bits |= (*reg_x as u32 & 0b111) << 16;
                 bits |= (*reg_y as u32 & 0b111) << 13;
-                bits |= (*reg_r as u32 & 0b111) << 10;
-                bits |= (*reg_g as u32 & 0b111) << 7;
-                bits |= (*reg_b as u32 & 0b111) << 4;
+                bits |= (*reg_rgb as u32 & 0b111) << 10;
             }
 
             Instruction::ControllerPad { reg_a }

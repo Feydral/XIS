@@ -1,10 +1,12 @@
+use std::error::Error;
+
 use crate::errors::CompileError;
 
 pub mod parser;
 pub mod assembler;
 
 
-pub fn compile(source: &[String], format: OutputFormat) -> Result<Vec<String>, CompileError> {
+pub fn compile(source: &[String], format: OutputFormat) -> Result<Vec<String>, Box<dyn Error>> {
     let mut output = Vec::new();
 
     for (ln, line) in source.iter().enumerate() {

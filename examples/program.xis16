@@ -95,6 +95,7 @@ LDI r4 13
 // Load a value as memory address ptr
 LDI r7 40
 
+// The syntax for MSTR is "MSTR ptr register offset"
 // Store the values in memory and use offsets to store them quickly next to eachother
 MSTR r7 r1 0
 MSTR r7 r2 1
@@ -123,7 +124,7 @@ LDI r2 0
 LDI r3 0
 LDI r4 0
 
-// If you want to read from memory, you use MLD (Memory Load). MLD doesnt change anything in memory
+// If you want to read from memory use MLD (Memory Load). MLD doesnt change anything in memory.
 MLD r7 r2 0
 
 /// Registers:
@@ -141,6 +142,4 @@ MLD r7 r2 0
 /// mem[42]: 50
 /// mem[43]: 13
 
-
-// You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs)
-HLT
+HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs)

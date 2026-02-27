@@ -1,4 +1,4 @@
-use crate::{instruction::Instruction, math::{self, mathi}};
+use crate::instruction::Instruction;
 
 pub fn generate_assembly_code(instruction: Instruction) -> String {
     match instruction {
@@ -30,7 +30,7 @@ pub fn generate_assembly_code(instruction: Instruction) -> String {
         Instruction::Return => "RET".to_string(),
         Instruction::MemoryLoad { reg_a, reg_b, offset } => format!("MLD r{} r{} {}", reg_a, reg_b, offset),
         Instruction::MemoryStore { reg_a, reg_b, offset } => format!("MSTR r{} r{} {}", reg_a, reg_b, offset),
-        Instruction::Draw { reg_x, reg_y, reg_r, reg_g, reg_b } => format!("DRW r{} r{} r{} r{} r{}", reg_x, reg_y, reg_r, reg_g, reg_b),
+        Instruction::Draw { reg_x, reg_y, reg_rgb } => format!("DRW r{} r{} r{}", reg_x, reg_y, reg_rgb),
         Instruction::PushBuffer => "PSHB".to_string(),
         Instruction::ControllerPad { reg_a } => format!("PAD r{}", reg_a),
         Instruction::RandomNumberGenerator { reg_a } => format!("RNG r{}", reg_a),
