@@ -1,4 +1,4 @@
-use crate::instruction::Instruction;
+use crate::{instruction::Instruction, math::mathi::int_to_hex_string};
 
 pub fn generate_assembly_code(instruction: Instruction) -> String {
     match instruction {
@@ -38,7 +38,7 @@ pub fn generate_assembly_code(instruction: Instruction) -> String {
 }
 
 pub fn generate_hex_code(instruction: Instruction) -> String {
-    todo!()
+    instruction.to_hex_string()
 }
 
 pub fn generate_binary_code(instruction: Instruction) -> String {

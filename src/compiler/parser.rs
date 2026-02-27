@@ -17,41 +17,199 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> 
     split.extend(line.split_whitespace().take(4));
     split.resize(4, "");
 
-    check_syntax(&split, ln)?;
-
     let instruction = match split[0].to_uppercase().as_str() {
-        "NOP"  => Instruction::NoOperation,
-        "HLT"  => Instruction::Halt,
-        "ADD"  => Instruction::Add                   { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "SUB"  => Instruction::Subtract              { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "MUL"  => Instruction::Multiply              { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "DIV"  => Instruction::Divide                { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "REM"  => Instruction::Modulo                { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "AND"  => Instruction::BitwiseAnd            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "NAND" => Instruction::BitwiseNand           { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "OR"   => Instruction::BitwiseOr             { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "NOR"  => Instruction::BitwiseNor            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "XOR"  => Instruction::BitwiseXor            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "XNOR" => Instruction::BitwiseXnor           { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "NOT"  => Instruction::BitwiseNot            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
-        "RSH"  => Instruction::RightShift            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
-        "LSH"  => Instruction::LeftShift             { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? },
-        "ROL"  => Instruction::Roll                  { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? },
-        "LDI"  => Instruction::LoadImmediate         { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
-        "ADDI" => Instruction::AddImmediate          { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
-        "SUBI" => Instruction::SubtractImmediate     { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
-        "MULI" => Instruction::MultiplyImmediate     { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
-        "DIVI" => Instruction::DivideImmediate       { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? },
-        "JMP"  => Instruction::Jump                  { address: to_instr_addr(split[1], ln)? },
-        "BRH"  => Instruction::Branch                { address: to_instr_addr(split[1], ln)? },
-        "CALL" => Instruction::Call                  { condition_flag: to_flag(split[1], ln)?, address: to_instr_addr(split[2], ln)? },
-        "RET"  => Instruction::Return,
-        "MLD"  => Instruction::MemoryLoad            { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? },
-        "MSTR" => Instruction::MemoryStore           { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? },
-        "DRW"  => Instruction::Draw                  { reg_x: to_reg(split[1], ln)?, reg_y: to_reg(split[2], ln)?, reg_rgb: to_reg(split[3], ln)? },
-        "PSHB" => Instruction::PushBuffer,
-        "PAD"  => Instruction::ControllerPad         { reg_a: to_reg(split[1], ln)? },
-        "RNG"  => Instruction::RandomNumberGenerator { reg_a: to_reg(split[1], ln)? },
+        "NOP" => { 
+            if !(split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: remove all operands.", split[0]), ln)));
+            }
+            Instruction::NoOperation 
+        },
+        "HLT" => { 
+            if !(split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: remove all operands.", split[0]), ln)));
+            }
+            Instruction::Halt 
+        }
+        "ADD" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Add { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "SUB" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Subtract { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "MUL" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Multiply { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "DIV" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Divide { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "REM" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Modulo { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "AND" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseAnd { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "NAND" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseNand { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "OR" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseOr { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "NOR" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseNor { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "XOR" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseXor { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "XNOR" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseXnor { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "NOT" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::BitwiseNot { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+        },
+        "RSH" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::RightShift { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+        },
+        "LSH" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::LeftShift { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+        },
+        "ROL" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Roll { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, reg_c: to_reg(split[3], ln)? } 
+        },
+        "LDI" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register and a immediate value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::LoadImmediate { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? } 
+        },
+        "ADDI" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register and a immediate value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::AddImmediate { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? } 
+        },
+        "SUBI" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register and a immediate value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::SubtractImmediate { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? } 
+        },
+        "MULI" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register and a immediate value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::MultiplyImmediate { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? } 
+        },
+        "DIVI" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register and a immediate value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::DivideImmediate { reg_a: to_reg(split[1], ln)?, immediate: to_immediate(split[2], ln)? } 
+        },
+        "JMP" => { 
+            if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes a instruction memory address as operand.", split[0], split[0]), ln)));
+            }
+            Instruction::Jump { address: to_instr_addr(split[1], ln)? } 
+        },
+        "BRH" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes a flag (CF, ZF or OF) and  instruction memory address as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Branch { address: to_instr_addr(split[1], ln)? } 
+        },
+        "CALL" => { 
+            if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes a instruction memory address as operand.", split[0], split[0]), ln)));
+            }
+            Instruction::Call { condition_flag: to_flag(split[1], ln)?, address: to_instr_addr(split[2], ln)? } 
+        },
+        "RET" => { 
+            if !(split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: remove all operands.", split[0]), ln)));
+            }
+            Instruction::Return 
+        },
+        "MLD" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 2 registers and a offset value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::MemoryLoad { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? } 
+        },
+        "MSTR" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 2 registers and a offset value as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::MemoryStore { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)?, offset: to_offset(split[3], ln)? } 
+        },
+        "DRW" => { 
+            if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 3 registers as operands.", split[0], split[0]), ln)));
+            }
+            Instruction::Draw { reg_x: to_reg(split[1], ln)?, reg_y: to_reg(split[2], ln)?, reg_rgb: to_reg(split[3], ln)? } 
+        },
+        "PSHB" => { 
+            if !(split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: remove all operands.", split[0]), ln)));
+            }
+            Instruction::PushBuffer 
+        },
+        "PAD" => { 
+            if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register as operand.", split[0], split[0]), ln)));
+            }
+            Instruction::ControllerPad { reg_a: to_reg(split[1], ln)? } 
+        },
+        "RNG" => { 
+            if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
+                return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register as operand.", split[0], split[0]), ln)));
+            }
+            Instruction::RandomNumberGenerator { reg_a: to_reg(split[1], ln)? } 
+        },
         _ => return Err(Box::new(CompileError::new("Invalid mnemonic", ln))),
     };
 
@@ -100,50 +258,4 @@ fn to_flag(s: &str, ln: usize) -> Result<u8, CompileError> {
     };
 
     Ok(value)
-}
-
-
-fn check_syntax(split: &[&str], ln: usize) -> Result<(), SyntaxError> {
-    let mnemonic = split[0].to_uppercase();
-    let (m, ok) = match mnemonic.as_str() {
-        m @ "NOP"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "HLT"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "ADD"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "SUB"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "MUL"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "DIV"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "REM"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "AND"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "NAND" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "OR"   => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "NOR"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "XOR"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "XNOR" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "NOT"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "RSH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "LSH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "ROL"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "LDI"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "ADDI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "SUBI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "MULI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "DIVI" => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "JMP"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "BRH"  => (m, !split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()),
-        m @ "CALL" => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "RET"  => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "MLD"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "MSTR" => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "DRW"  => (m, !split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()),
-        m @ "PSHB" => (m, split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "PAD"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ "RNG"  => (m, !split[1].is_empty() && split[2].is_empty() && split[3].is_empty()),
-        m @ _ => return Err(SyntaxError::new(format!("Unknown mnemonic '{}'", m), ln)),
-    };
-
-    if ok {
-        return Ok(());
-    }
-
-    Err(SyntaxError::new(format!("Mnemonic '{}' has wrong operands", m), ln))
 }

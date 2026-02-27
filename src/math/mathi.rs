@@ -30,12 +30,18 @@ pub fn bool_to_int(b: bool) -> u32 {
 
 #[doc = "Clamps an u32 between 0 and 1 (returns 0 if a == 0, returns 1 if a != 0)."]
 #[inline]
-pub fn clamp01(a: u32) -> u32 {
-    a.max(0).min(1)
+pub fn clamp01(value: u32) -> u32 {
+    value.max(0).min(1)
 }
 
-#[doc = "Turns a u8 into a binary String."]
+#[doc = "Turns a u64 into a binary String."]
 #[inline]
-pub fn int_to_binary_string(byte: u64, len: usize) -> String {
-    format!("{:0width$b}", byte, width = len)
+pub fn int_to_binary_string(value: u64, len: usize) -> String {
+    format!("{:0width$b}", value, width = len)
+}
+
+#[doc = "Turns a u64 into a hexadecimal String."]
+#[inline]
+pub fn int_to_hex_string(value: u64, len: usize) -> String {
+    format!("{:0width$x}", value, width = len)
 }
