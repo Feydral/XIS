@@ -37,7 +37,7 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub fn to_binary_string(&self) -> String {
+    fn encode(&self) -> u32 {
         let mut bits: u32 = 0;
 
         bits |= (self.get_opcode() as u32) << 19;
@@ -110,7 +110,15 @@ impl Instruction {
             | Instruction::PushBuffer => {}
         }
 
-        mathi::int_to_binary_string(bits as u64, 24)
+        bits
+    }
+
+    pub fn to_binary_string(&self) -> String {
+        mathi::int_to_binary_string(self.encode() as u64, 24)
+    }
+
+    pub fn to_hex_string(&self) -> String {
+        mathi::int_to_hex_string(self.encode() as u64, 6)
     }
 
     fn get_opcode(&self) -> u8 {

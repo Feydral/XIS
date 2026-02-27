@@ -17,7 +17,7 @@ fn main() {
         }
     };
 
-    let output = match compiler::compile(&source, OutputFormat::Assembly) {
+    let output = match compiler::compile(&source, OutputFormat::Hex) {
         Ok(o) => o,
         Err(e) => {
             eprintln!("{e}");
