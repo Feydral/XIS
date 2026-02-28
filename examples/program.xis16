@@ -121,7 +121,7 @@ MSTR r7 r4 3
 // Now set all registers back to zero (except r7, we want the keep the ptr)
 LDI r1 0
 LDI r2 0
-LDI r3 0
+LDI r3 0 dwa
 LDI r4 0
 
 // If you want to read from memory use MLD (Memory Load). MLD doesnt change anything in memory.

@@ -15,7 +15,7 @@ fn main() {
 
 fn repl() {
     loop {
-        let input = io_helper::read_line("xis>");
+        let input = io_helper::read_line("xis> ");
         let line = input.trim();
 
         if line.is_empty() {
@@ -66,7 +66,7 @@ fn handle_compile(args: &[&str]) -> Result<(), String> {
 
     let format = match args[4] {
         "binary" => OutputFormat::Binary,
-        "hex" => OutputFormat::Hex,
+        "hexadecimal" => OutputFormat::Hexadecimal,
         "assembly" => OutputFormat::Assembly,
         other => return Err(format!("Unknown format: {other}")),
     };
@@ -74,10 +74,26 @@ fn handle_compile(args: &[&str]) -> Result<(), String> {
     let source = io_helper::load_from_file(input_path)
         .map_err(|e| format!("IO error while loading file: {e}"))?;
 
-    let output = compiler::compile(&source, format)
-        .map_err(|e| format!("{e}"))?;
+    let results = compiler::compile(&source, format);
 
-    io_helper::write_to_file(output_path, output)
+    let mut errors = Vec::new();
+    let mut successful_output = Vec::new();
+
+    for (i, result) in results.into_iter().enumerate() {
+        match result {
+            Ok(line) => successful_output.push(line),
+            Err(e) => errors.push(e),
+        }
+    }
+
+    if !errors.is_empty() {
+        for err in errors {
+            println!("{err}");
+        }
+        return Err("Compilation failed due to errors.".into());
+    }
+
+    io_helper::write_to_file(output_path, successful_output)
         .map_err(|e| format!("IO error while writing file: {e}"))?;
 
     println!("Compilation successful.");

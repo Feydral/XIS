@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use crate::errors::BinaryDecodeError;
-use crate::{errors::CompileError, instruction::Instruction};
+use crate::instruction::Instruction;
 use crate::hardware::*;
 
 pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
@@ -12,18 +12,18 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
         .trim();
 
     if line.is_empty() {
-        return Err(Box::new(CompileError::new("Empty binary line", ln)));
+        return Err(Box::new(BinaryDecodeError::new("Empty binary line", ln)));
     }
 
     if line.len() != 24 || !line.chars().all(|c| c == '0' || c == '1') {
-        return Err(Box::new(CompileError::new(
+        return Err(Box::new(BinaryDecodeError::new(
             "Binary line must be exactly 24 characters of '0' or '1'",
             ln,
         )));
     }
 
     let value = u32::from_str_radix(line, 2)
-        .map_err(|_| CompileError::new("Failed to parse binary line", ln))?;
+        .map_err(|_| BinaryDecodeError::new("Failed to parse binary line", ln))?;
 
     let opcode = ((value >> 19) & 0b11111) as u8;
 

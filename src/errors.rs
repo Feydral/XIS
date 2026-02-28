@@ -1,27 +1,26 @@
 use std::{error::Error, fmt::Display};
 
 #[derive(Debug)]
-pub struct CompileError {
-    pub message: String,
-    pub line: usize,
+pub struct ParseError {
+    message: String,
+    line: usize,
 }
 
-impl CompileError {
+impl ParseError {
     pub fn new(message: impl Into<String>, line: usize) -> Self {
         Self { message: message.into(), line }
     }
 }
 
-impl Error for CompileError {
+impl Error for ParseError {
     
 }
     
-impl Display for CompileError {
+impl Display for ParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Compile error at line {}: {}", self.line, self.message)
+        write!(f, "Parse error at line {}: {}", self.line, self.message)
     }
 }
-
 
 #[derive(Debug)]
 pub struct SyntaxError {

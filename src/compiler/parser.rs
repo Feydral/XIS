@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use crate::{errors::{CompileError, SyntaxError}, hardware, instruction::Instruction};
+use crate::{errors::{ParseError, SyntaxError}, hardware, instruction::Instruction};
 
 pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
 	let line = line
@@ -10,7 +10,7 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> 
         .trim();
 
 	if line.is_empty() {
-		return Err(Box::new(CompileError::new("Empty line", ln)));
+		return Err(Box::new(ParseError::new("Empty line", ln)));
 	}
 
 	let mut split = Vec::with_capacity(4);
@@ -210,13 +210,13 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> 
             }
             Instruction::RandomNumberGenerator { reg_a: to_reg(split[1], ln)? } 
         },
-        _ => return Err(Box::new(CompileError::new("Invalid mnemonic", ln))),
+        _ => return Err(Box::new(ParseError::new("Invalid mnemonic", ln))),
     };
 
     Ok(instruction)
 }
 
-fn to_reg(s: &str, ln: usize) -> Result<u8, CompileError> {
+fn to_reg(s: &str, ln: usize) -> Result<u8, ParseError> {
     let is_valid = match s {
         "r0" | "r1" | "r2" | "r3" | "r4" | "r5" | "r6" | "r7" => true,
         _ => false,
@@ -225,36 +225,36 @@ fn to_reg(s: &str, ln: usize) -> Result<u8, CompileError> {
     if is_valid {
         Ok(s[1..].parse::<u8>().unwrap())
     } else {
-        Err(CompileError::new("Invalid register", ln))
+        Err(ParseError::new("Invalid register", ln))
     }
 }
 
-fn to_immediate(s: &str, ln: usize) -> Result<u16, CompileError> {
-    let value = s.parse::<u16>().map_err(|_| CompileError::new("Immediate value must be a number between 0 and 65535", ln))?;
+fn to_immediate(s: &str, ln: usize) -> Result<u16, ParseError> {
+    let value = s.parse::<u16>().map_err(|_| ParseError::new("Immediate value must be a number between 0 and 65535", ln))?;
     Ok(value)
 } 
 
-fn to_offset(s: &str, ln: usize) -> Result<u8, CompileError> {
-    let value = s.parse::<u8>().map_err(|_| CompileError::new(format!("Offset value must be a number between 0 and {}", hardware::MAX_MEMORY_OFFSET), ln))?;
+fn to_offset(s: &str, ln: usize) -> Result<u8, ParseError> {
+    let value = s.parse::<u8>().map_err(|_| ParseError::new(format!("Offset value must be a number between 0 and {}", hardware::MAX_MEMORY_OFFSET), ln))?;
     Ok(value)
 }
 
-fn to_instr_addr(s: &str, ln: usize) -> Result<u16, CompileError> {
-    let value = s.parse::<u16>().map_err(|_| CompileError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
+fn to_instr_addr(s: &str, ln: usize) -> Result<u16, ParseError> {
+    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
     
     if value >= hardware::INSTRUCTION_MEM_SIZE as u16 {
-        return Err(CompileError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln));
+        return Err(ParseError::new(format!("Address value must be a number between 0 and {}", hardware::INSTRUCTION_MEM_SIZE - 1), ln));
     }
 
     Ok(value)
 }
 
-fn to_flag(s: &str, ln: usize) -> Result<u8, CompileError> {
+fn to_flag(s: &str, ln: usize) -> Result<u8, ParseError> {
     let value = match s {
         "CF" => hardware::CARRY_FLAG_BINARY as u8,
         "ZF" => hardware::ZERO_FLAG_BINARY as u8,
         "OF" => hardware::OVERFLOW_FLAG_BINARY as u8,
-        _ => return Err(CompileError::new("Invalid condition flag. Must be one of 'CF', 'ZF', 'OF'", ln)),
+        _ => return Err(ParseError::new("Invalid condition flag. Must be one of 'CF', 'ZF', 'OF'", ln)),
     };
 
     Ok(value)
