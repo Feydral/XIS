@@ -1,4 +1,4 @@
-use crate::{errors::VirtualProgramError, instruction::{self, Instruction}};
+use crate::{errors::RuntimeError, instruction::{self, Instruction}};
 
 pub struct VirtualProgram {
     pub carry_flag: bool,
@@ -11,7 +11,7 @@ pub struct VirtualProgram {
 }
 
 impl VirtualProgram {
-    pub fn new(mut instructions: Vec<Instruction>) -> Result<Self, VirtualProgramError> {
+    pub fn new(mut instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
         if instructions.len() >= 4096 {
             instructions.truncate(4096);
         }

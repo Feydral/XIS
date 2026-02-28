@@ -9,6 +9,7 @@ mod instruction;
 mod hardware;
 
 fn main() {
+    // compile ../xis/examples/program.xis16 to ../xis/examples/out.c16 as binary
     repl();
 }
 

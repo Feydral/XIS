@@ -48,22 +48,45 @@ impl Display for SyntaxError {
 
 
 #[derive(Debug)]
-pub struct VirtualProgramError {
+pub struct RuntimeError {
     pub message: String,
 }
 
-impl VirtualProgramError {
+impl RuntimeError {
     pub fn new(message: impl Into<String>) -> Self {
         Self { message: message.into() }
     }
 }
 
-impl Error for VirtualProgramError {
+impl Error for RuntimeError {
     
 }
     
-impl Display for VirtualProgramError {
+impl Display for RuntimeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "An error appeared: {}", self.message)
+    }
+}
+
+
+#[derive(Debug)]
+pub struct BinaryDecodeError {
+    pub message: String,
+    pub line: usize,
+}
+
+impl BinaryDecodeError {
+    pub fn new(message: impl Into<String>, line: usize) -> Self {
+        Self { message: message.into(), line }
+    }
+}
+
+impl Error for BinaryDecodeError {
+    
+}
+    
+impl Display for BinaryDecodeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Decode error at line {}: {}", self.line, self.message)
     }
 }

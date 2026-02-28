@@ -59,7 +59,7 @@ NOR r0 r1 r2
 XOR r0 r1 r2
 
 // r2 = !(r0 ^ r1)
-XNOR r0 r1 r2
+XNOR r0 r1 r2 
 
 // r2 = !r1 (only 1 operand needed)
 NOT r1 r2
