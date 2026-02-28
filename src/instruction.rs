@@ -1,4 +1,4 @@
-use crate::math::mathi;
+use crate::{hardware::*, math::mathi};
 
 #[derive(Debug, Clone, Copy)]
 pub enum Instruction {
@@ -25,8 +25,8 @@ pub enum Instruction {
     MultiplyImmediate     { reg_a: u8, immediate: u16 },
     DivideImmediate       { reg_a: u8, immediate: u16 },
     Jump                  { address: u16 },
-    Branch                { address: u16 },
-    Call                  { condition_flag: u8, address: u16 },
+    Branch                { condition_flag: u8, address: u16 },
+    Call                  { address: u16 },
     Return,
     MemoryLoad            { reg_a: u8, reg_b: u8, offset: u8 },
     MemoryStore           { reg_a: u8, reg_b: u8, offset: u8 },
@@ -77,11 +77,11 @@ impl Instruction {
             }
 
             Instruction::Jump { address }
-            | Instruction::Branch { address } => {
+            | Instruction::Call { address } => {
                 bits |= *address as u32 & 0xFFFF;
             }
 
-            Instruction::Call { condition_flag, address } => {
+            Instruction::Branch { condition_flag, address } => {
                 bits |= (*condition_flag as u32 & 0b111) << 16;
                 bits |= *address as u32 & 0xFFFF;
             }
@@ -115,38 +115,38 @@ impl Instruction {
     
     fn get_opcode(&self) -> u8 {
         match self {
-            Instruction::NoOperation                  => 0b00000,
-            Instruction::Halt                         => 0b00001,
-            Instruction::Add { .. }                   => 0b00010,
-            Instruction::Subtract { .. }              => 0b00011,
-            Instruction::Multiply { .. }              => 0b00100,
-            Instruction::Divide { .. }                => 0b00101,
-            Instruction::Modulo { .. }                => 0b00110,
-            Instruction::BitwiseAnd { .. }            => 0b00111,
-            Instruction::BitwiseNand { .. }           => 0b01000,
-            Instruction::BitwiseOr { .. }             => 0b01001,
-            Instruction::BitwiseNor { .. }            => 0b01010,
-            Instruction::BitwiseXor { .. }            => 0b01011,
-            Instruction::BitwiseXnor { .. }           => 0b01100,
-            Instruction::BitwiseNot { .. }            => 0b01101,
-            Instruction::RightShift { .. }            => 0b01110,
-            Instruction::LeftShift { .. }             => 0b01111,
-            Instruction::Roll { .. }                  => 0b10000,
-            Instruction::LoadImmediate { .. }         => 0b10001,
-            Instruction::AddImmediate { .. }          => 0b10010,
-            Instruction::SubtractImmediate { .. }     => 0b10011,
-            Instruction::MultiplyImmediate { .. }     => 0b10100,
-            Instruction::DivideImmediate { .. }       => 0b10101,
-            Instruction::Jump { .. }                  => 0b10110,
-            Instruction::Branch { .. }                => 0b10111,
-            Instruction::Call { .. }                  => 0b11000,
-            Instruction::Return                       => 0b11001,
-            Instruction::MemoryLoad { .. }            => 0b11010,
-            Instruction::MemoryStore { .. }           => 0b11011,
-            Instruction::Draw { .. }                  => 0b11100,
-            Instruction::PushBuffer                   => 0b11101,
-            Instruction::ControllerPad { .. }         => 0b11110,
-            Instruction::RandomNumberGenerator { .. } => 0b11111,
+            Instruction::NoOperation                  => OPCODE_NOP,
+            Instruction::Halt                         => OPCODE_HLT,
+            Instruction::Add { .. }                   => OPCODE_ADD,
+            Instruction::Subtract { .. }              => OPCODE_SUB,
+            Instruction::Multiply { .. }              => OPCODE_MUL,
+            Instruction::Divide { .. }                => OPCODE_DIV,
+            Instruction::Modulo { .. }                => OPCODE_REM,
+            Instruction::BitwiseAnd { .. }            => OPCODE_AND,
+            Instruction::BitwiseNand { .. }           => OPCODE_NAND,
+            Instruction::BitwiseOr { .. }             => OPCODE_OR,
+            Instruction::BitwiseNor { .. }            => OPCODE_NOR,
+            Instruction::BitwiseXor { .. }            => OPCODE_XOR,
+            Instruction::BitwiseXnor { .. }           => OPCODE_XNOR,
+            Instruction::BitwiseNot { .. }            => OPCODE_NOT,
+            Instruction::RightShift { .. }            => OPCODE_RSH,
+            Instruction::LeftShift { .. }             => OPCODE_LSH,
+            Instruction::Roll { .. }                  => OPCODE_ROL,
+            Instruction::LoadImmediate { .. }         => OPCODE_LDI,
+            Instruction::AddImmediate { .. }          => OPCODE_ADDI,
+            Instruction::SubtractImmediate { .. }     => OPCODE_SUBI,
+            Instruction::MultiplyImmediate { .. }     => OPCODE_MULI,
+            Instruction::DivideImmediate { .. }       => OPCODE_DIVI,
+            Instruction::Jump { .. }                  => OPCODE_JMP,
+            Instruction::Branch { .. }                => OPCODE_BRH,
+            Instruction::Call { .. }                  => OPCODE_CALL,
+            Instruction::Return                       => OPCODE_RET,
+            Instruction::MemoryLoad { .. }            => OPCODE_MLD,
+            Instruction::MemoryStore { .. }           => OPCODE_MSTR,
+            Instruction::Draw { .. }                  => OPCODE_DRW,
+            Instruction::PushBuffer                   => OPCODE_PSHB,
+            Instruction::ControllerPad { .. }         => OPCODE_PAD,
+            Instruction::RandomNumberGenerator { .. } => OPCODE_RNG,
         }
     }
 
@@ -166,7 +166,7 @@ impl Instruction {
             Instruction::Subtract { reg_a, reg_b, reg_c } => format!("SUB r{} r{} r{}", reg_a, reg_b, reg_c),
             Instruction::Multiply { reg_a, reg_b, reg_c } => format!("MUL r{} r{} r{}", reg_a, reg_b, reg_c),
             Instruction::Divide { reg_a, reg_b, reg_c } => format!("DIV r{} r{} r{}", reg_a, reg_b, reg_c),
-            Instruction::Modulo { reg_a, reg_b, reg_c } => format!("MOD r{} r{} r{}", reg_a, reg_b, reg_c),
+            Instruction::Modulo { reg_a, reg_b, reg_c } => format!("REM r{} r{} r{}", reg_a, reg_b, reg_c),
             Instruction::BitwiseAnd { reg_a, reg_b, reg_c } => format!("AND r{} r{} r{}", reg_a, reg_b, reg_c),
             Instruction::BitwiseNand { reg_a, reg_b, reg_c } => format!("NAND r{} r{} r{}", reg_a, reg_b, reg_c),
             Instruction::BitwiseOr { reg_a, reg_b, reg_c } => format!("OR r{} r{} r{}", reg_a, reg_b, reg_c),
@@ -183,8 +183,8 @@ impl Instruction {
             Instruction::MultiplyImmediate { reg_a, immediate } => format!("MULI r{} {}", reg_a, immediate),
             Instruction::DivideImmediate { reg_a, immediate } => format!("DIVI r{} {}", reg_a, immediate),
             Instruction::Jump { address } => format!("JMP {}", address),
-            Instruction::Branch { address } => format!("BRH {}", address),
-            Instruction::Call { condition_flag, address } => format!("CALL {} {}", condition_flag, address),
+            Instruction::Branch { condition_flag, address } => format!("BRH {} {}", condition_flag, address),
+            Instruction::Call { address } => format!("CALL {}", address),
             Instruction::Return => "RET".to_string(),
             Instruction::MemoryLoad { reg_a, reg_b, offset } => format!("MLD r{} r{} {}", reg_a, reg_b, offset),
             Instruction::MemoryStore { reg_a, reg_b, offset } => format!("MSTR r{} r{} {}", reg_a, reg_b, offset),
