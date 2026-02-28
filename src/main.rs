@@ -27,7 +27,7 @@ fn repl() {
         }
 
         if let Err(e) = handle_command(&line) {
-            eprintln!("Error: {e}");
+            eprintln!("{e}");
         }
     }
 }
@@ -79,7 +79,7 @@ fn handle_compile(args: &[&str]) -> Result<(), String> {
     let mut errors = Vec::new();
     let mut successful_output = Vec::new();
 
-    for (i, result) in results.into_iter().enumerate() {
+    for result in results.into_iter() {
         match result {
             Ok(line) => successful_output.push(line),
             Err(e) => errors.push(e),
