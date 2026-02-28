@@ -100,7 +100,7 @@ LDI r7 40
 MSTR r7 r1 0
 MSTR r7 r2 1
 MSTR r7 r3 2
-MSTR r7 r4 3
+MSTR r7 r4 3 dwasdwa
 
 /// Registers:
 /// r1: 4
@@ -111,17 +111,23 @@ MSTR r7 r4 3
 /// r6: 0
 /// r7: 40
 
+dwasd 
+
+LDI 0000 1 
+ADD 1 2 r2
+
 /// Memory (only addresses we accessed)
 /// mem[40]: 4
 /// mem[41]: 43
 /// mem[42]: 50
 /// mem[43]: 13
 
+dwasd
 
 // Now set all registers back to zero (except r7, we want the keep the ptr)
-LDI r1 0
+LDI r1 0 a a 
 LDI r2 0
-LDI r3 0 dwa
+LDI r3 0 dasdadadas
 LDI r4 0
 
 // If you want to read from memory use MLD (Memory Load). MLD doesnt change anything in memory.
