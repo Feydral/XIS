@@ -12,9 +12,6 @@ impl Window {
     pub const WINDOW_WIDTH: u32 = 768;
     pub const WINDOW_HEIGHT: u32 = 768;
 
-    pub const BUFFER_WIDTH: u32 = Self::WINDOW_WIDTH / 3;
-    pub const BUFFER_HEIGHT: u32 = Self::WINDOW_HEIGHT / 3;
-
     const TARGET_FPS: u32 = 64;
 
     const WINDOW_OPTIONS: WindowOptions = WindowOptions {
@@ -39,13 +36,13 @@ impl Window {
         native_window.set_target_fps(Self::TARGET_FPS as usize);
 
         Self {
-            buffer: vec![0u32; (Self::BUFFER_WIDTH * Self::BUFFER_HEIGHT) as usize],
+            buffer: vec![0u32; (Self::WINDOW_WIDTH * Self::WINDOW_HEIGHT) as usize],
             native_window,
         }
     }
 
     pub fn update_buffer(&mut self) {
-        if let Err(e) = self.native_window.update_with_buffer(&self.buffer, Self::BUFFER_WIDTH as usize, Self::BUFFER_HEIGHT as usize) {
+        if let Err(e) = self.native_window.update_with_buffer(&self.buffer, Self::WINDOW_WIDTH as usize, Self::WINDOW_HEIGHT as usize) {
             eprintln!("Error updating buffer: {}", e);
         }
     }
@@ -55,15 +52,15 @@ impl Window {
     }
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: Float3) {
-        if x < Window::BUFFER_WIDTH && y < Window::BUFFER_HEIGHT {
-            let index = y as usize * Window::BUFFER_WIDTH as usize + x as usize;
+        if x < Window::WINDOW_WIDTH && y < Window::WINDOW_HEIGHT {
+            let index = y as usize * Window::WINDOW_WIDTH as usize + x as usize;
             self.buffer[index] = mathf::float3_to_u32_rgb(color);
         }
     }
 
     pub fn get_pixel(&self, x: u32, y: u32) -> Float3 {
-        if x < Self::BUFFER_WIDTH && y < Self::BUFFER_HEIGHT {
-            let index = y as usize * Self::BUFFER_WIDTH as usize + x as usize;
+        if x < Self::WINDOW_WIDTH && y < Self::WINDOW_HEIGHT {
+            let index = y as usize * Self::WINDOW_WIDTH as usize + x as usize;
             mathf::u32_to_float3_rgb(self.buffer[index])
         } else {
             Float3::ZERO

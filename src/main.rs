@@ -48,7 +48,7 @@ fn handle_command(input: &str) -> Result<(), String> {
 fn handle_compile(args: &[&str]) -> Result<(), String> {
     if args.len() != 5 {
         return Err(
-            "Usage: compile <input> to <output> as <binary|hex|assembly>".into()
+            "Usage: compile <input> to <output> as <binary|hexadecimal|assembly>".into()
         );
     }
 
