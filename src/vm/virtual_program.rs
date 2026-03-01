@@ -1,6 +1,8 @@
 use crate::{errors::RuntimeError, hardware, instruction::{self, Instruction}};
 
 pub struct VirtualProgram {
+    pub header: Vec<String>,
+
     pub carry_flag: bool,
     pub zero_flag: bool,
     pub overflow_flag: bool,
@@ -13,12 +15,14 @@ pub struct VirtualProgram {
 }
 
 impl VirtualProgram {
-    pub fn new(mut instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
+    pub fn new(header: Vec<String>, mut instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
         if instructions.len() >= hardware::INSTRUCTION_MEM_SIZE as usize {
             instructions.truncate(hardware::INSTRUCTION_MEM_SIZE as usize);
         }
 
         Ok(Self {
+            header,
+
             carry_flag: false,
             zero_flag: false,
             overflow_flag: false,
@@ -31,7 +35,24 @@ impl VirtualProgram {
         })
     }
 
-    pub fn advance_clock() -> Result<(), RuntimeError> {
+    pub fn advance_clock(&mut self) -> Result<(), RuntimeError> {
+        if self.pc >= hardware::INSTRUCTION_MEM_SIZE as u16 {
+            self.pc = 0;
+        }
+
+        let instruction = if (self.pc as usize) < self.instructions.len() {
+            self.instructions[self.pc as usize]
+        } else {
+            Instruction::NoOperation
+        };
+
+        self.execute_instruction(instruction)?;
+        self.pc += 1;
+
         Ok(())
+}
+
+    pub fn execute_instruction(&self, instruction: Instruction) -> Result<(), RuntimeError> {
+        todo!()
     }
 }
