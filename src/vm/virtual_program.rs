@@ -1,8 +1,6 @@
 use crate::{errors::RuntimeError, hardware, instruction::{self, Instruction}};
 
 pub struct VirtualProgram {
-    pub header: Vec<String>,
-
     pub carry_flag: bool,
     pub zero_flag: bool,
     pub overflow_flag: bool,
@@ -15,14 +13,12 @@ pub struct VirtualProgram {
 }
 
 impl VirtualProgram {
-    pub fn new(header: Vec<String>, mut instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
+    pub fn new(mut instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
         if instructions.len() >= hardware::INSTRUCTION_MEM_SIZE as usize {
             instructions.truncate(hardware::INSTRUCTION_MEM_SIZE as usize);
         }
 
         Ok(Self {
-            header,
-
             carry_flag: false,
             zero_flag: false,
             overflow_flag: false,

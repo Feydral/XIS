@@ -12,10 +12,18 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
         )));
     }
 
-    let value = u32::from_str_radix(line, 2)
-        .map_err(|_| BinaryDecodeError::new("Failed to parse binary line", ln))?;
+    let value = u32::from_str_radix(line, 2).map_err(|_| BinaryDecodeError::new("Failed to parse binary line", ln))?;
 
     let opcode = ((value >> 19) & 0b11111) as u8;
+    
+    let reg_a     = ((value >> 16) & 0b111) as u8;
+    let reg_b     = ((value >> 13) & 0b111) as u8;
+    let reg_c     = ((value >> 10) & 0b111) as u8;
+
+    let immediate = (value & 0xFFFF) as u16;
+    let address = ((value >> 5) & 0x0FFF) as u16;
+    let cond = ((value >> 17) & 0b11) as u8;
+    let offset    = (value & 0xFF) as u8;
 
     let instruction = match opcode {
         OPCODE_NOP => {

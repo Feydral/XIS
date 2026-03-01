@@ -161,7 +161,7 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> 
             if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes a flag (CF, ZF or OF) and an instruction memory address as operands.", split[0], split[0]), ln)));
             }
-            Instruction::Branch { condition_flag: to_flag(split[1], ln)?, address: to_instr_addr(split[1], ln)? } 
+            Instruction::Branch { condition_flag: to_flag(split[1], ln)?, address: to_instr_addr(split[2], ln)? } 
         },
         "CALL" => { 
             if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {

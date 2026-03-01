@@ -47,8 +47,8 @@ fn encode(instruction: &Instruction) -> u32 {
         }
 
         Instruction::Branch { condition_flag, address } => {
-            bits |= (*condition_flag as u32 & 0b111) << 16;
-            bits |= *address as u32 & 0xFFFF;
+            bits |= (*condition_flag as u32 & 0b111) << 17;
+            bits |= (*address as u32 & 0xFFFF) << 4;
         }
 
         Instruction::MemoryLoad { reg_a, reg_b, offset }
@@ -76,6 +76,7 @@ fn encode(instruction: &Instruction) -> u32 {
     }
 
     bits
+
 }
     
 fn get_opcode(instruction: &Instruction) -> u8 {

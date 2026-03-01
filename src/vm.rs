@@ -15,7 +15,7 @@ impl VirtualMachine {
         Ok(Self {
             window: Window::new(),
             header: header.clone(),
-            virtual_program: VirtualProgram::new(header, instructions)?,
+            virtual_program: VirtualProgram::new(instructions)?,
         })
     }
 

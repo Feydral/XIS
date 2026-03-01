@@ -1,5 +1,3 @@
-use crate::{hardware::*, math::mathi};
-
 #[derive(Debug, Clone, Copy)]
 pub enum Instruction {
     NoOperation,
