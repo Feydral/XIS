@@ -1,6 +1,7 @@
 use std::error::Error;
 
 pub mod parser;
+pub mod code_gen;
 
 pub fn compile(source: &[String], format: OutputFormat, ) -> Vec<Result<String, Box<dyn Error>>> {
     let mut output: Vec<Result<String, Box<dyn Error>>> = Vec::new();
@@ -25,9 +26,9 @@ pub fn compile(source: &[String], format: OutputFormat, ) -> Vec<Result<String, 
 
         let result: Result<String, Box<dyn Error>> = match parser::parse_line(line, ln) {
             Ok(instruction) => match format {
-                OutputFormat::Binary => Ok(instruction.to_binary_string()),
-                OutputFormat::Hexadecimal => Ok(instruction.to_hex_string()),
-                OutputFormat::Assembly => Ok(instruction.to_assembly_string()),
+                OutputFormat::Binary => Ok(code_gen::to_binary_string(&instruction)),
+                OutputFormat::Hexadecimal => Ok(code_gen::to_hexadecimal_string(&instruction)),
+                OutputFormat::Assembly => Ok(code_gen::to_assembly_string(&instruction)),
             },
             Err(e) => Err(e),
         };

@@ -5,16 +5,6 @@ use crate::instruction::Instruction;
 use crate::hardware::*;
 
 pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
-    let line = line
-        .split('#')
-        .next()
-        .unwrap_or("")
-        .trim();
-
-    if line.is_empty() {
-        return Err(Box::new(BinaryDecodeError::new("Empty binary line", ln)));
-    }
-
     if line.len() != 24 || !line.chars().all(|c| c == '0' || c == '1') {
         return Err(Box::new(BinaryDecodeError::new(
             "Binary line must be exactly 24 characters of '0' or '1'",
@@ -156,12 +146,7 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
             // RNG
             todo!()
         }
-        _ => {
-            return Err(Box::new(BinaryDecodeError::new(
-                "Invalid opcode",
-                ln,
-            )));
-        }
+        _ => unreachable!()
     };
 
     Ok(instruction)

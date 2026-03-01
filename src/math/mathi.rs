@@ -42,6 +42,6 @@ pub fn int_to_binary_string(value: u64, len: usize) -> String {
 
 #[doc = "Turns a u64 into a hexadecimal String."]
 #[inline]
-pub fn int_to_hex_string(value: u64, len: usize) -> String {
+pub fn int_to_hexadecimal_string(value: u64, len: usize) -> String {
     format!("{:0width$x}", value, width = len)
 }
