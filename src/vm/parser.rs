@@ -4,6 +4,9 @@ use crate::errors::BinaryDecodeError;
 use crate::instruction::Instruction;
 use crate::hardware::*;
 
+
+
+
 pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
     if line.len() != 24 || !line.chars().all(|c| c == '0' || c == '1') {
         return Err(Box::new(BinaryDecodeError::new(
@@ -16,9 +19,9 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
 
     let opcode = ((value >> 19) & 0b11111) as u8;
     
-    let reg_a     = ((value >> 16) & 0b111) as u8;
-    let reg_b     = ((value >> 13) & 0b111) as u8;
-    let reg_c     = ((value >> 10) & 0b111) as u8;
+    let reg_a      = ((value >> 16) & 0b111) as u8;
+    let reg_b      = ((value >> 13) & 0b111) as u8;
+    let reg_c      = ((value >> 10) & 0b111) as u8;
 
     let immediate = (value & 0xFFFF) as u16;
     let address = ((value >> 5) & 0x0FFF) as u16;
