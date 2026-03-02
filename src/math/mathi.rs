@@ -45,3 +45,17 @@ pub fn int_to_binary_string(value: u64, len: usize) -> String {
 pub fn int_to_hexadecimal_string(value: u64, len: usize) -> String {
     format!("{:0width$x}", value, width = len)
 }
+
+#[doc = "Turns a hexadecimal String into a binary String."]
+#[inline]
+pub fn hexadecimal_string_to_binary_string(hex: &str, len: usize) -> Result<String, std::num::ParseIntError> {
+    let value = u64::from_str_radix(hex, 16)?;
+    Ok(format!("{:0width$b}", value, width = len))
+}
+
+#[doc = "Turns a binary String into a hexadecimal String."]
+#[inline]
+pub fn binary_string_to_hexadecimal_string(bin: &str, len: usize) -> Result<String, std::num::ParseIntError> {
+    let value = u64::from_str_radix(bin, 2)?;
+    Ok(format!("{:0width$x}", value, width = len))
+}

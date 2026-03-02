@@ -3,9 +3,19 @@ use std::error::Error;
 use crate::errors::BinaryDecodeError;
 use crate::instruction::Instruction;
 use crate::hardware::*;
+use crate::math::mathi;
 
+pub fn parse_hexadecimal_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
+    if line.len() != 6 || !line.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err(Box::new(BinaryDecodeError::new(
+            "Hexadecimal line must be exactly 6 hexadecimal characters (0-9, a-f, A-F)",
+            ln,
+        )));
+    }
 
-
+    let binary_line = mathi::hexadecimal_string_to_binary_string(line, 24).unwrap();
+    parse_binary_line(&binary_line, ln)
+}
 
 pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
     if line.len() != 24 || !line.chars().all(|c| c == '0' || c == '1') {

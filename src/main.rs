@@ -1,4 +1,4 @@
-use crate::compiler::OutputFormat;
+use crate::{compiler::OutputFormat, math::mathi};
 
 mod vm;
 mod compiler;
