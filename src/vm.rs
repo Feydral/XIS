@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::{errors::RuntimeError, instruction::Instruction, vm::{virtual_program::VirtualProgram, window::Window}};
 
 pub mod window;
@@ -6,16 +8,16 @@ pub mod parser;
 
 pub struct VirtualMachine {
     pub window: Window,
-    pub header: Vec<String>,
     pub virtual_program: VirtualProgram,
 }
 
 impl VirtualMachine {
-    pub fn new(header: Vec<String>, instructions: Vec<Instruction>) -> Result<Self, RuntimeError> {
+    pub fn new(path: impl Into<String>) -> Result<Self, Box<dyn Error>> {
+        let program = VirtualProgram::new(path.into())?;
+
         Ok(Self {
             window: Window::new(),
-            header: header.clone(),
-            virtual_program: VirtualProgram::new(instructions)?,
+            virtual_program: program,
         })
     }
 

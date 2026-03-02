@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Write, stdin, stdout};
 use std::path::Path;
 
-pub fn load_from_file(path: &str) -> Result<Vec<String>, std::io::Error> {
+pub fn read_from_file(path: &str) -> Result<Vec<String>, std::io::Error> {
     let resolved_path = Path::new(path);
 
     let file = File::open(&resolved_path)

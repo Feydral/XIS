@@ -71,7 +71,7 @@ fn handle_compile(args: &[&str]) -> Result<(), String> {
         other => return Err(format!("Unknown format: {other}")),
     };
 
-    let source = io_helper::load_from_file(input_path)
+    let source = io_helper::read_from_file(input_path)
         .map_err(|e| format!("IO error while loading file: {e}"))?;
 
     let results = compiler::compile(&source, format);
