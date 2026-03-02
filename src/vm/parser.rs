@@ -22,138 +22,42 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
 
     let immediate = (value & 0xFFFF) as u16;
     let address = ((value >> 5) & 0x0FFF) as u16;
-    let cond = ((value >> 17) & 0b11) as u8;
+    let condition_flag = ((value >> 17) & 0b11) as u8;
     let offset    = (value & 0xFF) as u8;
 
     let instruction = match opcode {
-        OPCODE_NOP => {
-            // NOP
-            todo!()
-        }
-        OPCODE_HLT => {
-            // HLT
-            todo!()
-        }
-        OPCODE_ADD => {
-            // ADD
-            todo!()
-        }
-        OPCODE_SUB => {
-            // SUB
-            todo!()
-        }
-        OPCODE_MUL => {
-            // MUL
-            todo!()
-        }
-        OPCODE_DIV => {
-            // DIV
-            todo!()
-        }
-        OPCODE_REM => {
-            // REM
-            todo!()
-        }
-        OPCODE_AND => {
-            // AND
-            todo!()
-        }
-        OPCODE_NAND => {
-            // NAND
-            todo!()
-        }
-        OPCODE_OR => {
-            // OR
-            todo!()
-        }
-        OPCODE_NOR => {
-            // NOR
-            todo!()
-        }
-        OPCODE_XOR => {
-            // XOR
-            todo!()
-        }
-        OPCODE_XNOR => {
-            // XNOR
-            todo!()
-        }
-        OPCODE_NOT => {
-            // NOT
-            todo!()
-        }
-        OPCODE_RSH => {
-            // RSH
-            todo!()
-        }
-        OPCODE_LSH => {
-            // LSH
-            todo!()
-        }
-        OPCODE_ROL => {
-            // ROL
-            todo!()
-        }
-        OPCODE_LDI => {
-            // LDI
-            todo!()
-        }
-        OPCODE_ADDI => {
-            // ADDI
-            todo!()
-        }
-        OPCODE_SUBI => {
-            // SUBI
-            todo!()
-        }
-        OPCODE_MULI => {
-            // MULI
-            todo!()
-        }
-        OPCODE_DIVI => {
-            // DIVI
-            todo!()
-        }
-        OPCODE_JMP => {
-            // JMP
-            todo!()
-        }
-        OPCODE_BRH => {
-            // BRH
-            todo!()
-        }
-        OPCODE_CALL => {
-            // CALL
-            todo!()
-        }
-        OPCODE_RET => {
-            // RET
-            todo!()
-        }
-        OPCODE_MLD => {
-            // MLD
-            todo!()
-        }
-        OPCODE_MSTR => {
-            // MSTR
-            todo!()
-        }
-        OPCODE_DRW => {
-            // DRW
-            todo!()
-        }
-        OPCODE_PSHB => {
-            // PSHB
-            todo!()
-        }
-        OPCODE_PAD => {
-            // PAD
-            todo!()
-        }
-        OPCODE_RNG => {
-            // RNG
-            todo!()
-        }
+        OPCODE_NOP  => { Instruction::NoOperation { } }
+        OPCODE_HLT  => { Instruction::Halt { } }
+        OPCODE_ADD  => { Instruction::Add { reg_a, reg_b, reg_c } }
+        OPCODE_SUB  => { Instruction::Subtract { reg_a, reg_b, reg_c } }
+        OPCODE_MUL  => { Instruction::Multiply { reg_a, reg_b, reg_c } }
+        OPCODE_DIV  => { Instruction::Divide { reg_a, reg_b, reg_c } }
+        OPCODE_REM  => { Instruction::Modulo { reg_a, reg_b, reg_c } }
+        OPCODE_AND  => { Instruction::BitwiseAnd { reg_a, reg_b, reg_c } }
+        OPCODE_NAND => { Instruction::BitwiseNand { reg_a, reg_b, reg_c } }
+        OPCODE_OR   => { Instruction::BitwiseOr { reg_a, reg_b, reg_c } }
+        OPCODE_NOR  => { Instruction::BitwiseNor { reg_a, reg_b, reg_c } }
+        OPCODE_XOR  => { Instruction::BitwiseXor { reg_a, reg_b, reg_c } }
+        OPCODE_XNOR => { Instruction::BitwiseXnor { reg_a, reg_b, reg_c } }
+        OPCODE_NOT  => { Instruction::BitwiseNot { reg_a, reg_b } }
+        OPCODE_RSH  => { Instruction::RightShift { reg_a, reg_b } }
+        OPCODE_LSH  => { Instruction::LeftShift { reg_a, reg_b } }
+        OPCODE_ROL  => { Instruction::Roll { reg_a, reg_b, reg_c } }
+        OPCODE_LDI  => { Instruction::LoadImmediate { reg_a, immediate } }
+        OPCODE_ADDI => { Instruction::AddImmediate { reg_a, immediate }  }
+        OPCODE_SUBI => { Instruction::SubtractImmediate { reg_a, immediate }  }
+        OPCODE_MULI => { Instruction::MultiplyImmediate { reg_a, immediate }  }
+        OPCODE_DIVI => { Instruction::DivideImmediate { reg_a, immediate }  }
+        OPCODE_JMP  => { Instruction::Jump { address } }
+        OPCODE_BRH  => { Instruction::Branch { condition_flag, address } }
+        OPCODE_CALL => { Instruction::Call { address } }
+        OPCODE_RET  => { Instruction::Return { } }
+        OPCODE_MLD  => { Instruction::MemoryLoad { reg_a, reg_b, offset } }
+        OPCODE_MSTR => { Instruction::MemoryStore { reg_a, reg_b, offset } }
+        OPCODE_DRW  => { Instruction::Draw { reg_x: reg_a, reg_y: reg_b, reg_rgb: reg_c } }
+        OPCODE_PSHB => { Instruction::PushBuffer { } }
+        OPCODE_PAD  => { Instruction::ControllerPad { reg_a } }
+        OPCODE_RNG  => { Instruction::RandomNumberGenerator { reg_a } }
         _ => unreachable!()
     };
 
