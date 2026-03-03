@@ -1,6 +1,11 @@
 use std::error::Error;
 
-use crate::{errors::{BinaryDecodeError, RuntimeError}, hardware, instruction::{self, Instruction}, io_helper, vm::parser};
+use common::errors::RuntimeError;
+use common::hardware;
+use common::instruction::Instruction;
+use common::io_helper;
+
+use crate::parser;
 
 pub struct VirtualProgram {
     pub carry_flag: bool,

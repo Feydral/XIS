@@ -1,10 +1,8 @@
 use std::error::Error;
 
-use crate::{errors::RuntimeError, instruction::Instruction, vm::{virtual_program::VirtualProgram, window::Window}};
+use common::errors::RuntimeError;
 
-pub mod window;
-pub mod virtual_program;
-pub mod parser;
+use crate::{virtual_program::VirtualProgram, window::Window};
 
 pub struct VirtualMachine {
     pub window: Window,
@@ -19,10 +17,6 @@ impl VirtualMachine {
             window: Window::new(),
             virtual_program: program,
         })
-    }
-
-    pub fn new_from_program(path: impl Into<String>) -> Result<Self, RuntimeError> {
-        todo!()
     }
 
     pub fn run(&mut self) -> Result<(), RuntimeError> {

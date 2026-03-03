@@ -1,6 +1,6 @@
 use minifb::WindowOptions;
 
-use crate::math::{mathf, numerics::float3::Float3};
+use common::math::{mathf, numerics::float3::Float3};
 
 pub struct Window {
     buffer: Vec<u32>,

@@ -1,7 +1,4 @@
-[package]
-name = "xis"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = [ "compiler", "vm" ]
 
-[dependencies]
-minifb = "0.28.0"
+resolver = "2"

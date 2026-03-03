@@ -1,9 +1,9 @@
 use std::error::Error;
 
-use crate::errors::BinaryDecodeError;
-use crate::instruction::Instruction;
-use crate::hardware::*;
-use crate::math::mathi;
+use common::errors::BinaryDecodeError;
+use common::instruction::Instruction;
+use common::hardware::*;
+use common::math::mathi;
 
 pub fn parse_hexadecimal_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
     if line.len() != 6 || !line.chars().all(|c| c.is_ascii_hexdigit()) {
