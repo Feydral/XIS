@@ -1,7 +1,7 @@
 mod parser;
 mod vm;
 mod window;
-mod register_file;
+mod component;
 
 pub fn main() {
     todo!()

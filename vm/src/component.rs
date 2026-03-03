@@ -1,5 +1,29 @@
 use std::ops::{Index, IndexMut};
 
+use common::hardware;
+use common::instruction::Instruction;
+
+pub struct InstructionMemory {
+    instructions: Vec<Instruction>,
+}
+
+impl InstructionMemory {
+    pub fn new(mut instructions: Vec<Instruction>) -> Self {
+        if instructions.len() > hardware::INSTRUCTION_MEM_SIZE as usize {
+            instructions.truncate(hardware::INSTRUCTION_MEM_SIZE as usize);
+        }
+        Self { instructions }
+    }
+}
+
+impl Index<usize> for InstructionMemory {
+    type Output = Instruction;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        self.instructions.get(index).unwrap_or(&Instruction::NoOperation)
+    }
+}
+
 pub struct RegisterFile {
     registers: [u16; 8],
 }

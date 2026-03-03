@@ -2,16 +2,16 @@ use std::error::Error;
 
 use common::{errors::RuntimeError, hardware, instruction::Instruction, io_helper};
 
-use crate::{parser, window::Window};
+use crate::{component::{InstructionMemory, RegisterFile}, parser, window::Window};
 
 pub struct VirtualMachine {
     pub window: Window,
 
-    pub instructions: Vec<Instruction>,
+    pub instruction_mem: InstructionMemory,
     pub carry_flag: bool,
     pub zero_flag: bool,
     pub overflow_flag: bool,
-    pub registers: [u16; 8],
+    pub register_file: RegisterFile,
     pub memory: [u16; 1024],
     pub pc: u16,
 }
@@ -78,11 +78,11 @@ impl VirtualMachine {
         Ok(Self {
             window: Window::new(),
 
-            instructions,
+            instruction_mem: InstructionMemory::new(instructions),
             carry_flag: false,
             zero_flag: false,
             overflow_flag: false,
-            registers: [0_16; 8],
+            register_file: RegisterFile::new(),
             memory: [0_16; 1024],
             pc: 0,
         })
