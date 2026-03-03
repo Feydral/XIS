@@ -11,6 +11,7 @@ pub struct VirtualMachine {
     pub carry_flag: bool,
     pub zero_flag: bool,
     pub overflow_flag: bool,
+    pub registers: [u16; 8],
     pub memory: [u16; 1024],
     pub pc: u16,
 }
@@ -81,6 +82,7 @@ impl VirtualMachine {
             carry_flag: false,
             zero_flag: false,
             overflow_flag: false,
+            registers: [0_16; 8],
             memory: [0_16; 1024],
             pc: 0,
         })
@@ -89,4 +91,136 @@ impl VirtualMachine {
     pub fn run(&mut self) -> Result<(), RuntimeError> {
         todo!()
     }
+
+pub fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), RuntimeError> {
+    match instruction {
+        Instruction::NoOperation => { }
+
+        Instruction::Halt => {
+            return Err(RuntimeError::new("Program stopped"));
+        }
+
+        Instruction::Add { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::Subtract { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::Multiply { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::Divide { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::Modulo { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseAnd { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseNand { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseOr { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseNor { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseXor { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseXnor { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::BitwiseNot { reg_a, reg_b } => {
+        
+        }
+
+        Instruction::RightShift { reg_a, reg_b } => {
+        
+        }
+
+        Instruction::LeftShift { reg_a, reg_b } => {
+        
+        }
+
+        Instruction::Roll { reg_a, reg_b, reg_c } => {
+        
+        }
+
+        Instruction::LoadImmediate { reg_a, immediate } => {
+        
+        }
+
+        Instruction::AddImmediate { reg_a, immediate } => {
+        
+        }
+
+        Instruction::SubtractImmediate { reg_a, immediate } => {
+        
+        }
+
+        Instruction::MultiplyImmediate { reg_a, immediate } => {
+        
+        }
+
+        Instruction::DivideImmediate { reg_a, immediate } => {
+        
+        }
+
+        Instruction::Jump { address } => {
+        
+        }
+
+        Instruction::Branch { condition_flag, address } => {
+        
+        }
+
+        Instruction::Call { address } => {
+        
+        }
+
+        Instruction::Return => {
+        
+        }
+
+        Instruction::MemoryLoad { reg_a, reg_b, offset } => {
+        
+        }
+
+        Instruction::MemoryStore { reg_a, reg_b, offset } => {
+        
+        }
+
+        Instruction::Draw { reg_x, reg_y, reg_rgb } => {
+        
+        }
+
+        Instruction::PushBuffer => {
+        
+        }
+
+        Instruction::ControllerPad { reg_a } => {
+        
+        }
+
+        Instruction::RandomNumberGenerator { reg_a } => {
+        
+        }
+    }
+
+    Ok(())
+}
 }
