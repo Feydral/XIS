@@ -1,7 +1,6 @@
 use std::error::Error;
 
-pub mod parser;
-pub mod code_gen;
+use crate::{code_gen, parser};
 
 pub fn compile(source: &[String], format: OutputFormat, ) -> Vec<Result<String, Box<dyn Error>>> {
     let mut output: Vec<Result<String, Box<dyn Error>>> = Vec::new();

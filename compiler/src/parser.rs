@@ -1,6 +1,9 @@
 use std::error::Error;
 
-use crate::{errors::{ParseError, SyntaxError}, hardware, instruction::Instruction};
+use common::errors::ParseError;
+use common::errors::SyntaxError;
+use common::hardware;
+use common::instruction::Instruction;
 
 pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
 	let line = line

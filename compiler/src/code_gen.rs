@@ -1,6 +1,6 @@
-use crate::instruction::Instruction;
-use crate::hardware::*;
-use crate::math::mathi;
+use common::instruction::Instruction;
+use common::hardware::*;
+use common::math::mathi;
 
 fn encode(instruction: &Instruction) -> u32 {
     let mut bits: u32 = 0;
