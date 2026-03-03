@@ -1,7 +1,5 @@
 use minifb::WindowOptions;
 
-use common::math::{mathf, numerics::float3::Float3};
-
 pub struct Window {
     buffer: Vec<u32>,
     native_window: minifb::Window,
@@ -63,10 +61,7 @@ impl Window {
             let g8 = (g4 << 4) | g4;
             let b8 = (b4 << 4) | b4;
 
-            self.buffer[index] =
-                ((r8 as u32) << 16) |
-                ((g8 as u32) << 8)  |
-                (b8 as u32);
+            self.buffer[index] = ((r8 as u32) << 16) | ((g8 as u32) << 8) | (b8 as u32);
         }
     }
 
@@ -83,9 +78,7 @@ impl Window {
             let g4 = g8 >> 4;
             let b4 = b8 >> 4;
 
-            ((r4 as u16) << 8) |
-            ((g4 as u16) << 4) |
-            (b4 as u16)
+            ((r4 as u16) << 8) | ((g4 as u16) << 4) | (b4 as u16)
         } else {
             0
         }
