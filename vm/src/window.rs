@@ -51,19 +51,43 @@ impl Window {
         self.native_window.is_open()
     }
 
-    pub fn set_pixel(&mut self, x: u32, y: u32, color: Float3) {
-        if x < Window::WINDOW_WIDTH && y < Window::WINDOW_HEIGHT {
-            let index = y as usize * Window::WINDOW_WIDTH as usize + x as usize;
-            self.buffer[index] = mathf::float3_to_u32_rgb(color);
+    pub fn set_pixel(&mut self, x: u32, y: u32, color: u16) {
+        if x < Self::WINDOW_WIDTH && y < Self::WINDOW_HEIGHT {
+            let index = y as usize * Self::WINDOW_WIDTH as usize + x as usize;
+
+            let r4 = ((color >> 8) & 0xF) as u8;
+            let g4 = ((color >> 4) & 0xF) as u8;
+            let b4 = (color & 0xF) as u8;
+
+            let r8 = (r4 << 4) | r4;
+            let g8 = (g4 << 4) | g4;
+            let b8 = (b4 << 4) | b4;
+
+            self.buffer[index] =
+                ((r8 as u32) << 16) |
+                ((g8 as u32) << 8)  |
+                (b8 as u32);
         }
     }
 
-    pub fn get_pixel(&self, x: u32, y: u32) -> Float3 {
+    pub fn get_pixel(&self, x: u32, y: u32) -> u16 {
         if x < Self::WINDOW_WIDTH && y < Self::WINDOW_HEIGHT {
             let index = y as usize * Self::WINDOW_WIDTH as usize + x as usize;
-            mathf::u32_to_float3_rgb(self.buffer[index])
+            let pixel = self.buffer[index];
+
+            let r8 = ((pixel >> 16) & 0xFF) as u8;
+            let g8 = ((pixel >> 8) & 0xFF) as u8;
+            let b8 = (pixel & 0xFF) as u8;
+
+            let r4 = r8 >> 4;
+            let g4 = g8 >> 4;
+            let b4 = b8 >> 4;
+
+            ((r4 as u16) << 8) |
+            ((g4 as u16) << 4) |
+            (b4 as u16)
         } else {
-            Float3::ZERO
+            0
         }
     }
 }
