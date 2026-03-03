@@ -3,7 +3,7 @@ use std::io::{BufRead, BufReader, Write, stdin, stdout};
 use std::path::Path;
 
 pub fn read_from_file(path: &str) -> Result<Vec<String>, std::io::Error> {
-    let resolved_path = Path::new(path);
+    let resolved_path = Path::new(path.trim());
 
     let file = File::open(&resolved_path)
         .map_err(|e| {
@@ -28,7 +28,7 @@ pub fn read_from_file(path: &str) -> Result<Vec<String>, std::io::Error> {
 }
 
 pub fn write_to_file(path: &str, data: Vec<String>) -> Result<(), std::io::Error> {
-    let resolved_path = Path::new(path);
+    let resolved_path = Path::new(path.trim());
 
     let mut file = File::create(&resolved_path)
         .map_err(|e| {
