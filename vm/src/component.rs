@@ -299,6 +299,153 @@ impl ArithmeticLogicUnit {
 
         result
     }
+    
+    pub fn rsh(&mut self, a: u16) -> u16 {
+        let result = a >> 1;
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+
+        if (a & 0x0001) != 0 {
+            self.carry_flag = true;
+        }
+
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn lsh(&mut self, a: u16) -> u16 {
+        let result = a << 1;
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+
+        if (a & 0x8000) != 0 {
+            self.carry_flag = true;
+        }
+
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn rol(&mut self, a: u16, b: u16) -> u16 {
+        let shift = (b & 0xF) as u32;
+        let result = a.rotate_right(shift);
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+
+        if shift > 0 {
+            let shifted_out = (a >> (shift - 1)) & 1;
+            if shifted_out == 1 {
+                self.carry_flag = true;
+            }
+        }
+
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn addi(&mut self, a: u16, imm: u16) -> u16 {
+        let (result, carry) = a.overflowing_add(imm);
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+        if carry {
+            self.carry_flag = true;
+        }
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn subi(&mut self, a: u16, imm: u16) -> u16 {
+        let (result, borrow) = a.overflowing_sub(imm);
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+        if borrow {
+            self.carry_flag = true;
+        }
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn muli(&mut self, a: u16, imm: u16) -> u16 {
+        let (result, carry) = a.overflowing_mul(imm);
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+        if carry {
+            self.carry_flag = true;
+        }
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
+
+    pub fn divi(&mut self, a: u16, imm: u16) -> u16 {
+        let result = if imm == 0 { 0 } else { a / imm };
+
+        self.zero_flag = false;
+        self.carry_flag = false;
+        self.overflow_flag = false;
+
+        if result == 0 {
+            self.zero_flag = true;
+        }
+        if (result & 0x8000) != 0 {
+            self.overflow_flag = true;
+        }
+
+        result
+    }
 }
 
 

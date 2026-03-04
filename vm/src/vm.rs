@@ -170,7 +170,8 @@ pub fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), Ru
         }
 
         Instruction::RightShift { reg_a, reg_c } => {
-        
+            let a = self.register_file[reg_a.into()];
+            self.register_file[reg_c.into()] = self.alu.rsh(a)
         }
 
         Instruction::LeftShift { reg_a, reg_c } => {
