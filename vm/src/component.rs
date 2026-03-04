@@ -300,3 +300,29 @@ impl ArithmeticLogicUnit {
         result
     }
 }
+
+
+pub struct CallStack {
+    stack: Vec<u16>,
+}
+
+impl CallStack {
+    pub fn new() -> Self {
+        Self {
+            stack: Vec::with_capacity(hardware::CALLSTACK_DEPTH as usize),
+        }
+    }
+
+    pub fn push(&mut self, value: u16) {
+        if self.stack.len() < hardware::CALLSTACK_DEPTH as usize {
+            self.stack.push(value);
+        }
+    }
+
+    pub fn pop(&mut self) -> u16 {
+        match self.stack.pop() {
+            Some(v) => v,
+            None => 0,
+        }
+    }
+}

@@ -77,6 +77,7 @@ impl VirtualMachine {
             window: Window::new(),
 
             instruction_mem: InstructionMemory::new(instructions),
+            alu: ArithmeticLogicUnit::new(),
             register_file: RegisterFile::new(),
             memory: [0_16; 1024],
             pc: 0,
