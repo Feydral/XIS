@@ -149,10 +149,7 @@ MLD r7 r2 0
 LDI r1 4095
 DRW r0 r0 r1
 
-// Then use PSHB to update the screen. PSHB cleares the backbuffer
+// Then use PSHB to update the screen. PSHB cleares the backbuffer (2x PSHB is a screen-clear)
 PSHB
 
-// A simple loop to keep the window open:
-JMP 39
-
-HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs)
+HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.

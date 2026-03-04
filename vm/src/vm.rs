@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use common::{errors::RuntimeError, hardware::{self, CARRY_FLAG_BINARY, INSTRUCTION_MEM_SIZE, OVERFLOW_FLAG_BINARY, SCREEN_HEIGHT, SCREEN_WIDTH, ZERO_FLAG_BINARY}, instruction::Instruction, io_helper, math::mathi::{self, index_to_xy}};
+use common::{errors::RuntimeError, hardware::{self, CARRY_FLAG_BINARY, INSTRUCTION_MEM_SIZE, OVERFLOW_FLAG_BINARY, SCREEN_HEIGHT, SCREEN_WIDTH, ZERO_FLAG_BINARY}, instruction::Instruction, io_helper, math::mathi::{self}};
 
 use crate::{component::{ArithmeticLogicUnit, CallStack, InstructionMemory, RegisterFile}, parser, window::Window};
 
@@ -262,7 +262,8 @@ impl VirtualMachine {
             }
 
             Instruction::ControllerPad { reg_a } => {
-                todo!()
+                let _ = reg_a;
+                todo!();
             }
 
             Instruction::RandomNumberGenerator { reg_a } => {
