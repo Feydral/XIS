@@ -6,12 +6,6 @@ use common::hardware;
 use common::instruction::Instruction;
 
 pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
-	let line = line
-        .split("//")
-        .next()
-        .unwrap_or("")
-        .trim();
-
 	let tokens: Vec<&str> = line.split_whitespace().collect();
 
     if tokens.len() > 4 {

@@ -79,7 +79,7 @@ ROL r0 r1 r2
 
 ///---------------- Memory ----------------///
 
-// The memory has 1024 addresses (0..1023), if you try accessesing one out of range, nothing will happend (addresses beyond 1023 are like a zero register)
+// The memory has 1024 addresses (0..=1023), if you try accessesing one out of range, nothing will happend (addresses beyond 1023 behave like r0)
 
 // Load 40 into register 2
 LDI r2 40
@@ -95,7 +95,7 @@ LDI r4 13
 // Load a value as memory address ptr
 LDI r7 40
 
-// The syntax for MSTR is "MSTR ptr register offset"
+// The syntax for MSTR is <MSTR 'ptr' 'value' 'offset'> where ptr and value are both registers. offset is an immediate value in the range 0..=255
 // Store the values in memory and use offsets to store them quickly next to eachother
 MSTR r7 r1 0
 MSTR r7 r2 1
@@ -152,4 +152,31 @@ DRW r0 r0 r1
 // Then use PSHB to update the screen. PSHB cleares the backbuffer (2x PSHB is a screen-clear)
 PSHB
 
+
+
+///---------------- Loops'n Labels ----------------///
+
+// You can make a simple loop with a JMP instruction:
+// .loop
+// JMP .loop
+// But this would loop forever
+
+
+// Use BRH and a condition to make a controlled loop: 
+
+// For an example, loop 10 times
+LDI r1 10
+
+.loop
+// Decrement r1 by 1
+SUBI r1 1 
+
+// Exit if 0
+BRH ZF .exit
+
+// Continue looping
+JMP .loop
+
+
+.exit
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.

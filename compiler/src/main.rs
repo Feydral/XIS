@@ -32,9 +32,9 @@ fn main() {
     };
 
     let compiled_result = match format_trimmed.to_string().as_str() {
-        "binary" | "bin" => compiler::compile(&file_content, compiler::OutputFormat::Binary),
-        "hexadecimal" | "hex" => compiler::compile(&file_content, compiler::OutputFormat::Hexadecimal),
-        "assembly" | "asm" => compiler::compile(&file_content, compiler::OutputFormat::Assembly),
+        "binary" | "bin" => compiler::compile(file_content, compiler::OutputFormat::Binary),
+        "hexadecimal" | "hex" => compiler::compile(file_content, compiler::OutputFormat::Hexadecimal),
+        "assembly" | "asm" => compiler::compile(file_content, compiler::OutputFormat::Assembly),
         _ => {
             eprintln!("Unknown format: '{}'", format_trimmed);
             return;

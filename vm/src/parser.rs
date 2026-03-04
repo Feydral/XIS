@@ -34,7 +34,7 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
     let reg_c      = ((value >> 10) & 0b111) as u8;
 
     let immediate = (value & 0xFFFF) as u16;
-    let address = ((value >> 6) & 0x0FFF) as u16;
+    let address = ((value >> 5) & 0x0FFF) as u16;
     let condition_flag = ((value >> 17) & 0b11) as u8;
     let offset    = (value & 0xFF) as u8;
 

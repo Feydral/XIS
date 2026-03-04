@@ -214,11 +214,10 @@ impl VirtualMachine {
 
             Instruction::Jump { address } => {
                 self.pc = address;
-                println!("{}", address);
             }
 
             Instruction::Branch { condition_flag, address } => {
-                match condition_flag as u32{
+                match condition_flag as u32 {
                     ZERO_FLAG_BINARY => if self.alu.zero_flag() { self.pc = address; },
                     CARRY_FLAG_BINARY => if self.alu.carry_flag() { self.pc = address; },
                     OVERFLOW_FLAG_BINARY => if self.alu.overflow_flag() { self.pc = address; },

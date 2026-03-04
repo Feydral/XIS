@@ -1,8 +1,10 @@
 use std::error::Error;
 
-use crate::{code_gen, parser};
+use crate::{code_gen, parser, preprocessor};
 
-pub fn compile(source: &[String], format: OutputFormat, ) -> Vec<Result<String, Box<dyn Error>>> {
+pub fn compile(input: Vec<String>, format: OutputFormat) -> Vec<Result<String, Box<dyn Error>>> {
+    let source = preprocessor::process_program(input);
+
     let mut output: Vec<Result<String, Box<dyn Error>>> = Vec::new();
 
     let header = match format {
@@ -19,12 +21,6 @@ pub fn compile(source: &[String], format: OutputFormat, ) -> Vec<Result<String, 
     output.push(Ok("".into()));
 
     for (ln, line) in source.iter().enumerate() {
-        let code_part = line.split("//").next().unwrap().trim();
-
-        if code_part.is_empty() {
-            continue;
-        }
-
         let result: Result<String, Box<dyn Error>> = match parser::parse_line(line, ln) {
             Ok(instruction) => match format {
                 OutputFormat::Binary => Ok(code_gen::to_binary_string(&instruction)),
