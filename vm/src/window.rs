@@ -64,23 +64,4 @@ impl Window {
             self.buffer[index] = ((r8 as u32) << 16) | ((g8 as u32) << 8) | (b8 as u32);
         }
     }
-
-    pub fn get_pixel(&self, x: u32, y: u32) -> u16 {
-        if x < Self::WINDOW_WIDTH && y < Self::WINDOW_HEIGHT {
-            let index = y as usize * Self::WINDOW_WIDTH as usize + x as usize;
-            let pixel = self.buffer[index];
-
-            let r8 = ((pixel >> 16) & 0xFF) as u8;
-            let g8 = ((pixel >> 8) & 0xFF) as u8;
-            let b8 = (pixel & 0xFF) as u8;
-
-            let r4 = r8 >> 4;
-            let g4 = g8 >> 4;
-            let b4 = b8 >> 4;
-
-            ((r4 as u16) << 8) | ((g4 as u16) << 4) | (b4 as u16)
-        } else {
-            0
-        }
-    }
 }
