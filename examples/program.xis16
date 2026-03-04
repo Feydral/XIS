@@ -153,6 +153,6 @@ DRW r0 r0 r1
 PSHB
 
 // A simple loop to keep the window open:
-JMP 155
+JMP 39
 
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs)

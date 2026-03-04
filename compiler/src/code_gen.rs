@@ -43,7 +43,7 @@ fn encode(instruction: &Instruction) -> u32 {
 
         Instruction::Jump { address }
         | Instruction::Call { address } => {
-            bits |= *address as u32 & 0xFFFF;
+            bits |= (*address as u32 & 0xFFF) << 6;
         }
 
         Instruction::Branch { condition_flag, address } => {

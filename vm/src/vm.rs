@@ -94,7 +94,7 @@ impl VirtualMachine {
             self.pc += 1;
         }
 
-        // println!("{}", self.pc);
+        println!("{}", self.pc);
 
         match instruction {
             Instruction::NoOperation => { }

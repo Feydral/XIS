@@ -19,7 +19,7 @@ impl Window {
         borderless: false,
         title: true,
         resize: false,
-        topmost: true,
+        topmost: false,
         transparency: false,
         none: false,
     };
