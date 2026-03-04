@@ -2,15 +2,13 @@ use std::error::Error;
 
 use common::{errors::RuntimeError, hardware, instruction::Instruction, io_helper};
 
-use crate::{component::{InstructionMemory, RegisterFile}, parser, window::Window};
+use crate::{component::{ArithmeticLogicUnit, InstructionMemory, RegisterFile}, parser, window::Window};
 
 pub struct VirtualMachine {
     pub window: Window,
 
     pub instruction_mem: InstructionMemory,
-    pub carry_flag: bool,
-    pub zero_flag: bool,
-    pub overflow_flag: bool,
+    pub alu: ArithmeticLogicUnit,
     pub register_file: RegisterFile,
     pub memory: [u16; 1024],
     pub pc: u16,
@@ -79,9 +77,6 @@ impl VirtualMachine {
             window: Window::new(),
 
             instruction_mem: InstructionMemory::new(instructions),
-            carry_flag: false,
-            zero_flag: false,
-            overflow_flag: false,
             register_file: RegisterFile::new(),
             memory: [0_16; 1024],
             pc: 0,
