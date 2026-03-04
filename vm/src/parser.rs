@@ -52,9 +52,9 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
         OPCODE_NOR  => { Instruction::BitwiseNor { reg_a, reg_b, reg_c } }
         OPCODE_XOR  => { Instruction::BitwiseXor { reg_a, reg_b, reg_c } }
         OPCODE_XNOR => { Instruction::BitwiseXnor { reg_a, reg_b, reg_c } }
-        OPCODE_NOT  => { Instruction::BitwiseNot { reg_a, reg_b } }
-        OPCODE_RSH  => { Instruction::RightShift { reg_a, reg_b } }
-        OPCODE_LSH  => { Instruction::LeftShift { reg_a, reg_b } }
+        OPCODE_NOT  => { Instruction::BitwiseNot { reg_a, reg_c } }
+        OPCODE_RSH  => { Instruction::RightShift { reg_a, reg_c } }
+        OPCODE_LSH  => { Instruction::LeftShift { reg_a, reg_c } }
         OPCODE_ROL  => { Instruction::Roll { reg_a, reg_b, reg_c } }
         OPCODE_LDI  => { Instruction::LoadImmediate { reg_a, immediate } }
         OPCODE_ADDI => { Instruction::AddImmediate { reg_a, immediate }  }

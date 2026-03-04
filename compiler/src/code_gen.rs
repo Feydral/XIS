@@ -25,11 +25,11 @@ fn encode(instruction: &Instruction) -> u32 {
             bits |= (*reg_c as u32 & 0b111) << 10;
         }
 
-        Instruction::BitwiseNot { reg_a, reg_b }
-        | Instruction::RightShift { reg_a, reg_b }
-        | Instruction::LeftShift { reg_a, reg_b } => {
+        Instruction::BitwiseNot { reg_a, reg_c }
+        | Instruction::RightShift { reg_a, reg_c }
+        | Instruction::LeftShift { reg_a, reg_c } => {
             bits |= (*reg_a as u32 & 0b111) << 16;
-            bits |= (*reg_b as u32 & 0b111) << 13;
+            bits |= (*reg_c as u32 & 0b111) << 13;
         }
 
         Instruction::LoadImmediate { reg_a, immediate }
@@ -139,9 +139,9 @@ pub fn to_assembly_string(instruction: &Instruction) -> String {
         Instruction::BitwiseNor { reg_a, reg_b, reg_c } => format!("NOR r{} r{} r{}", reg_a, reg_b, reg_c),
         Instruction::BitwiseXor { reg_a, reg_b, reg_c } => format!("XOR r{} r{} r{}", reg_a, reg_b, reg_c),
         Instruction::BitwiseXnor { reg_a, reg_b, reg_c } => format!("XNOR r{} r{} r{}", reg_a, reg_b, reg_c),
-        Instruction::BitwiseNot { reg_a, reg_b } => format!("NOT r{} r{}", reg_a, reg_b),
-        Instruction::RightShift { reg_a, reg_b } => format!("RSH r{} r{}", reg_a, reg_b),
-        Instruction::LeftShift { reg_a, reg_b } => format!("LSH r{}, r{}", reg_a, reg_b),
+        Instruction::BitwiseNot { reg_a, reg_c } => format!("NOT r{} r{}", reg_a, reg_c),
+        Instruction::RightShift { reg_a, reg_c } => format!("RSH r{} r{}", reg_a, reg_c),
+        Instruction::LeftShift { reg_a, reg_c } => format!("LSH r{}, r{}", reg_a, reg_c),
         Instruction::Roll { reg_a, reg_b, reg_c } => format!("ROL r{} r{} r{}", reg_a, reg_b, reg_c),
         Instruction::LoadImmediate { reg_a, immediate } => format!("LDI r{} {}", reg_a, immediate),
         Instruction::AddImmediate { reg_a, immediate } => format!("ADDI r{} {}", reg_a, immediate),

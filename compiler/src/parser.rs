@@ -104,19 +104,19 @@ pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> 
             if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
             }
-            Instruction::BitwiseNot { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+            Instruction::BitwiseNot { reg_a: to_reg(split[1], ln)?, reg_c: to_reg(split[2], ln)? } 
         },
         "RSH" => { 
             if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
             }
-            Instruction::RightShift { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+            Instruction::RightShift { reg_a: to_reg(split[1], ln)?, reg_c: to_reg(split[2], ln)? } 
         },
         "LSH" => { 
             if !(!split[1].is_empty() && !split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes only 2 registers as operands.", split[0], split[0]), ln)));
             }
-            Instruction::LeftShift { reg_a: to_reg(split[1], ln)?, reg_b: to_reg(split[2], ln)? } 
+            Instruction::LeftShift { reg_a: to_reg(split[1], ln)?, reg_c: to_reg(split[2], ln)? } 
         },
         "ROL" => { 
             if !(!split[1].is_empty() && !split[2].is_empty() && !split[3].is_empty()) {
