@@ -1,3 +1,4 @@
+use common::{hardware, math::mathi};
 use minifb::WindowOptions;
 
 pub struct Window {
@@ -34,13 +35,13 @@ impl Window {
         native_window.set_target_fps(Self::TARGET_FPS as usize);
 
         Self {
-            buffer: vec![0u32; (Self::WINDOW_WIDTH * Self::WINDOW_HEIGHT) as usize],
+            buffer: vec![0u32; (hardware::SCREEN_WIDTH * hardware::SCREEN_WIDTH) as usize],
             native_window,
         }
     }
 
     pub fn update_buffer(&mut self) {
-        if let Err(e) = self.native_window.update_with_buffer(&self.buffer, Self::WINDOW_WIDTH as usize, Self::WINDOW_HEIGHT as usize) {
+        if let Err(e) = self.native_window.update_with_buffer(&self.buffer, hardware::SCREEN_WIDTH as usize, hardware::SCREEN_WIDTH as usize) {
             eprintln!("Error updating buffer: {}", e);
         }
     }
@@ -50,8 +51,8 @@ impl Window {
     }
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: u16) {
-        if x < Self::WINDOW_WIDTH && y < Self::WINDOW_HEIGHT {
-            let index = y as usize * Self::WINDOW_WIDTH as usize + x as usize;
+        if x < hardware::SCREEN_WIDTH && y < hardware::SCREEN_HEIGHT {
+            let index = mathi::xy_to_index(x, y, hardware::SCREEN_WIDTH, hardware::SCREEN_HEIGHT) as usize;
 
             let r4 = ((color >> 8) & 0xF) as u8;
             let g4 = ((color >> 4) & 0xF) as u8;

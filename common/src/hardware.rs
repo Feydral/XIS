@@ -7,8 +7,8 @@ pub const CARRY_FLAG_BINARY: u32 = 0b01;
 pub const OVERFLOW_FLAG_BINARY: u32 = 0b10;
 pub const ZERO_FLAG_BINARY: u32 = 0b11;
 
-pub const SCREEN_WIDTH: u32 = 768;
-pub const SCREEN_HEIGHT: u32 = 768;
+pub const SCREEN_WIDTH: u32 = 256;
+pub const SCREEN_HEIGHT: u32 = 256;
 
 pub const OPCODE_NOP: u8  = 0;
 pub const OPCODE_HLT: u8  = 1;

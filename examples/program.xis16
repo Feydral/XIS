@@ -141,6 +141,18 @@ MLD r7 r2 0
 /// mem[42]: 50
 /// mem[43]: 13
 
-BRH ZF 4095
+
+
+///---------------- Drawing ----------------///
+
+// Use the DRW mnemonic to draw to the buffer
+LDI r1 4095
+DRW r0 r0 r1
+
+// Then use PSHB to update the screen. PSHB cleares the backbuffer
+PSHB
+
+// A simple loop to keep the window open:
+JMP 155
 
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs)

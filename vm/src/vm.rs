@@ -1,12 +1,11 @@
 use std::error::Error;
 
-use common::{errors::RuntimeError, hardware::{self, CARRY_FLAG_BINARY, OVERFLOW_FLAG_BINARY, SCREEN_HEIGHT, SCREEN_WIDTH, ZERO_FLAG_BINARY}, instruction::Instruction, io_helper, math::mathi::{self, index_to_xy}};
+use common::{errors::RuntimeError, hardware::{self, CARRY_FLAG_BINARY, INSTRUCTION_MEM_SIZE, OVERFLOW_FLAG_BINARY, SCREEN_HEIGHT, SCREEN_WIDTH, ZERO_FLAG_BINARY}, instruction::Instruction, io_helper, math::mathi::{self, index_to_xy}};
 
 use crate::{component::{ArithmeticLogicUnit, CallStack, InstructionMemory, RegisterFile}, parser, window::Window};
 
 pub struct VirtualMachine {
-    pub window: Window,
-    pub buffer: [u16; (SCREEN_WIDTH * SCREEN_HEIGHT) as usize],
+    pub buffer: Vec<u16>,
 
     pub instruction_mem: InstructionMemory,
     pub alu: ArithmeticLogicUnit,
@@ -76,8 +75,7 @@ impl VirtualMachine {
         }
 
         Ok(Self {
-            window: Window::new(),
-            buffer: [0_16; (SCREEN_WIDTH * SCREEN_HEIGHT) as usize],
+            buffer: vec![0_u16; (SCREEN_WIDTH * SCREEN_HEIGHT) as usize],
 
             instruction_mem: InstructionMemory::new(instructions),
             alu: ArithmeticLogicUnit::new(),
@@ -88,81 +86,84 @@ impl VirtualMachine {
         })
     }
 
-    pub fn run(&mut self) -> Result<(), RuntimeError> {
-        todo!()
-    }
+    pub fn execute_next_instruction(&mut self, window: &mut Window) -> bool {
+        let instruction = self.instruction_mem[self.pc as usize];
+        if self.pc == (INSTRUCTION_MEM_SIZE - 1) as u16 {
+            self.pc = 0
+        } else {
+            self.pc += 1;
+        }
 
-    pub fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), RuntimeError> {
+        // println!("{}", self.pc);
+
         match instruction {
             Instruction::NoOperation => { }
 
-            Instruction::Halt => {
-                return Err(RuntimeError::new("Program stopped"));
-            }
+            Instruction::Halt => { return true; }
 
             Instruction::Add { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.add(a, b)
             }
 
             Instruction::Subtract { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.sub(a, b)
             }
 
             Instruction::Multiply { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.mul(a, b)
             }
 
             Instruction::Divide { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.div(a, b)
             }
 
             Instruction::Modulo { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.modulo(a, b)
             }
 
             Instruction::BitwiseAnd { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.and(a, b)
             }
 
             Instruction::BitwiseNand { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.nand(a, b)
             }
 
             Instruction::BitwiseOr { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.or(a, b)
             }
 
             Instruction::BitwiseNor { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.nor(a, b)
             }
 
             Instruction::BitwiseXor { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.xor(a, b)
             }
 
             Instruction::BitwiseXnor { reg_a, reg_b, reg_c } => {
                 let a = self.register_file[reg_a.into()];
-                let b = self.register_file[reg_a.into()];
+                let b = self.register_file[reg_b.into()];
                 self.register_file[reg_c.into()] = self.alu.xnor(a, b)
             }
 
@@ -213,6 +214,7 @@ impl VirtualMachine {
 
             Instruction::Jump { address } => {
                 self.pc = address;
+                println!("{}", address);
             }
 
             Instruction::Branch { condition_flag, address } => {
@@ -254,8 +256,9 @@ impl VirtualMachine {
             Instruction::PushBuffer => {
                 for (index, color) in self.buffer.iter().enumerate() {
                     let pos = mathi::index_to_xy(index as u32, SCREEN_WIDTH, SCREEN_HEIGHT);
-                    self.window.set_pixel(pos.x, pos.y, *color);
+                    window.set_pixel(pos.x, pos.y, *color);
                 }
+                self.buffer.fill(0);
             }
 
             Instruction::ControllerPad { reg_a } => {
@@ -276,6 +279,6 @@ impl VirtualMachine {
             }
         }
 
-        Ok(())
+        false
     }
 }
