@@ -1,0 +1,63 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Xis16 Assembly",
+  "scopeName": "source.xis16",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#labels" },
+    { "include": "#flags" },
+    { "include": "#instructions" },
+    { "include": "#registers" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.xis16",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "labels": {
+      "patterns": [
+        {
+          "name": "entity.name.function.xis16",
+          "match": "^\\.([A-Za-z_][A-Za-z0-9_]*)\\b"
+        },
+        {
+          "name": "entity.name.function.xis16",
+          "match": "(?<=\\s)\\.([A-Za-z_][A-Za-z0-9_]*)\\b"
+        }
+      ]
+    },
+    "flags": {
+      "name": "keyword.other.flag.xis16",
+      "match": "\\b(ZF|OF|CF)\\b"
+    },
+    "instructions": {
+      "name": "keyword.control.xis16",
+      "match": "\\b(NOP|HLT|ADD|SUB|MUL|DIV|REM|AND|NAND|OR|NOR|XOR|XNOR|NOT|RSH|LSH|ROL|LDI|ADDI|SUBI|MULI|DIVI|JMP|BRH|CALL|RET|MLD|MSTR|DRW|PSHB|PAD|RNG)\\b"
+    },
+    "registers": {
+      "name": "variable.language.xis16",
+      "match": "\\br[0-7]\\b"
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.hex.xis16",
+          "match": "\\b0x[0-9A-Fa-f]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.xis16",
+          "match": "\\b0b[01]+\\b"
+        },
+        {
+          "name": "constant.numeric.decimal.xis16",
+          "match": "(?<![A-Za-z_])-?[0-9]+\\b"
+        }
+      ]
+    }
+  }
+}

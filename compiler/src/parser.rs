@@ -228,17 +228,17 @@ fn to_reg(s: &str, ln: usize) -> Result<u8, ParseError> {
 }
 
 fn to_immediate(s: &str, ln: usize) -> Result<u16, ParseError> {
-    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Immediate value must be a number between 0 and 65535. {} is not in range 0..65535", s), ln))?;
+    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Invalid immediate: '{}'. Immediate value must be a number between 0 and 65535.", s), ln))?;
     Ok(value)
 } 
 
 fn to_offset(s: &str, ln: usize) -> Result<u8, ParseError> {
-    let value = s.parse::<u8>().map_err(|_| ParseError::new(format!("Offset value must be a number between 0 and {}.", hardware::MAX_MEMORY_OFFSET), ln))?;
+    let value = s.parse::<u8>().map_err(|_| ParseError::new(format!("Invalid offset: '{}'. Offset value must be a number between 0 and {}.", s, hardware::MAX_MEMORY_OFFSET), ln))?;
     Ok(value)
 }
 
 fn to_instr_addr(s: &str, ln: usize) -> Result<u16, ParseError> {
-    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Address value must be a number between 0 and {}.", hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
+    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Invalid address: '{}'. Address value must be a number between 0 and {}.", s, hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
     
     if value >= hardware::INSTRUCTION_MEM_SIZE as u16 {
         return Err(ParseError::new(format!("Address value must be a number between 0 and {}.", hardware::INSTRUCTION_MEM_SIZE - 1), ln));

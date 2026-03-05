@@ -16,7 +16,13 @@ pub fn process_program(input: Vec<String>) -> Vec<String> {
         }
 
         if clean.starts_with('.') {
-            let label_name = clean.split_whitespace().next().unwrap_or(&clean).to_string();
+            let mut parts = clean.split_whitespace();
+            let label_name = parts.next().unwrap_or(&clean).to_string();
+
+            if parts.next().is_some() {
+                continue;
+            }
+
             labels.insert(label_name, instructions.len());
             continue;
         }

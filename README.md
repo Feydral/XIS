@@ -13,7 +13,6 @@ Xis can be imagined as the instruction set for a simple, Game Boy–like system 
 - A debugger that helps you find errors
 - A virtual machine capable of executing c16 programs
 
-
 The VM uses the [minifb](https://github.com/emoon/rust_minifb) library for a simple way of displaying pixels in real time.
 
 ### Goals
