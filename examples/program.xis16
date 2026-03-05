@@ -158,25 +158,49 @@ PSHB
 
 // You can make a simple loop with a JMP instruction:
 // .loop
+// <- inside the loop
 // JMP .loop
 // But this would loop forever
 
 
 // Use BRH and a condition to make a controlled loop: 
 
-// For an example, loop 50 times
+// For an example, loop 50 times:
 LDI r1 50
 
-.loop 
+.loop_1
 // Decrement r1 by 1
 SUBI r1 1 
 
 // Exit if 0
-BRH ZF .exit
+BRH ZF .exit_loop_1
 
 // Continue looping
-JMP .loop
+JMP .loop_1
+.exit_loop_1
 
 
-.exit
+// If you want to count up instead of down:
+
+// r1 is our counter
+LDI r1 0
+// r2 is the max value
+LDI r2 30
+
+.loop_2
+// Increment r1 
+ADDI r1 1 
+
+// Compare r1 and r2 (by substracting) - discard the result
+SUB r2 r1 r0
+// If r1 == r2 (because r2 - r1 == 0 -> zero-flag: true) jump out of the loop
+BRH ZF .exit_loop_2
+
+// Continue looping
+JMP .loop_1
+
+.exit_loop_2
+
+
+
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.
