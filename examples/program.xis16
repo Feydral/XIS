@@ -165,8 +165,8 @@ PSHB
 
 // Use BRH and a condition to make a controlled loop: 
 
-// For an example, loop 50 times:
-LDI r1 50
+// For an example, loop 10 times:
+LDI r1 10
 
 .loop_1
 // Decrement r1 by 1
@@ -193,14 +193,14 @@ ADDI r1 1
 
 // Compare r1 and r2 (by substracting) - discard the result
 SUB r2 r1 r0
-// If r1 == r2 (because r2 - r1 == 0 -> zero-flag: true) jump out of the loop
+// If r1 == r2 (because if (r2 - r1 == 0) -> zero-flag: true) jump out of the loop
 BRH ZF .exit_loop_2
 
 // Continue looping
-JMP .loop_1
-
+JMP .loop_2
 .exit_loop_2
 
-
+LDI r1 0
+LDI r2 0
 
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.

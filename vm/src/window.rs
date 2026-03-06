@@ -11,7 +11,7 @@ impl Window {
     pub const WINDOW_WIDTH: u32 = 768;
     pub const WINDOW_HEIGHT: u32 = 768;
 
-    const TARGET_FPS: u32 = 64;
+    const TARGET_FPS: u32 = 0;
 
     const WINDOW_OPTIONS: WindowOptions = WindowOptions {
         scale: minifb::Scale::X1,

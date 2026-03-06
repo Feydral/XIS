@@ -47,6 +47,30 @@ impl Display for SyntaxError {
 
 
 #[derive(Debug)]
+pub struct PreprocessError {
+    pub message: String,
+    pub line: usize,
+}
+
+impl PreprocessError {
+    pub fn new(message: impl Into<String>, line: usize) -> Self {
+        Self { message: message.into(), line }
+    }
+}
+
+impl Error for PreprocessError {
+    
+}
+    
+impl Display for PreprocessError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Preprocess error at line {}: {}", self.line, self.message)
+    }
+}
+
+
+
+#[derive(Debug)]
 pub struct RuntimeError {
     pub message: String,
 }

@@ -5,7 +5,7 @@ use common::errors::SyntaxError;
 use common::hardware;
 use common::instruction::Instruction;
 
-pub fn parse_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn Error>> {
+pub fn parse_line(line: String, ln: usize) -> Result<Instruction, Box<dyn Error>> {
 	let tokens: Vec<&str> = line.split_whitespace().collect();
 
     if tokens.len() > 4 {
