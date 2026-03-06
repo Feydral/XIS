@@ -153,6 +153,27 @@ PSHB
 
 
 
+///---------------- Definitions ----------------///
+
+// Definitions are compile-constant aliases for values. Everywhere your use a definition, the preprocessor will replace it with its value. 
+
+#define red 0x0f00
+#define blue 0x00f0
+#define green 0x000f
+#define white 0x0fff
+
+#define pixel_pos_x 10
+#define pixel_pos_y 10
+
+LDI r1 red
+LDI r2 pixel_pos_x
+LDI r3 pixel_pos_y
+
+DRW r2 r3 r1
+PSHB
+
+
+
 ///---------------- Loops'n Labels ----------------///
 
 // You can make a simple loop with a JMP instruction:
@@ -201,25 +222,44 @@ JMP .loop_2
 LDI r1 0
 LDI r2 0
 
+// Nested loops are the same, although they are more complicated:
 
+// Outer loop: 0..10
+LDI r1 0
+LDI r3 16
 
-///---------------- Definitions ----------------///
+.loop_outer
+    // Inner loop: 0..20
+    LDI r2 0
+    LDI r4 16
 
-// Definitions are compile-constant aliases for values. Everywhere your use a definition, the preprocessor will replace it with its value. 
+    .loop_inner
+        DRW r1 r2 r1
 
-#define red 3840
-#define pixel_pos_x 10
-#define pixel_pos_y 10
+        ADDI r2 1
+        SUB r4 r2 r0
+        BRH zero .exit_loop_inner
+        JMP .loop_inner
 
-LDI r1 red
-LDI r2 pixel_pos_x
-LDI r3 pixel_pos_y
+    .exit_loop_inner
 
-DRW r2 r3 r1
+    ADDI r1 1
+    SUB r3 r1 r0
+    BRH zero .exit_loop_outer
+    JMP .loop_outer
+
+.exit_loop_outer
+
 PSHB
+
+
+LDI r1 0
+LDI r2 0
+LDI r3 0
+LDI r4 0
+LDI r5 0
 
 .dont_close
 JMP .dont_close
-
 
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.

@@ -10,7 +10,7 @@ fn main() {
 
     let mut input_file_trimmed = "../xis/examples/program.xis16".to_string();
     let mut output_file_trimmed = "../xis/examples/out.c16".to_string();
-    let mut format_trimmed = "binary".to_string();
+    let mut format_trimmed = "hexadecimal".to_string();
 
     if default.trim().to_lowercase() == "n" {
         let input_file = io_helper::read_line("File to compile: ");

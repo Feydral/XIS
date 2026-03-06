@@ -164,7 +164,7 @@ pub fn parse_line(line: String, ln: usize) -> Result<Instruction, Box<dyn Error>
             if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes an instruction memory address as operand.", split[0], split[0]), ln)));
             }
-            Instruction::Call { address: to_instr_addr(split[2], ln)? } 
+            Instruction::Call { address: to_instr_addr(split[1], ln)? } 
         },
         "RET" => { 
             if !(split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
@@ -228,32 +228,48 @@ fn to_reg(s: &str, ln: usize) -> Result<u8, ParseError> {
 }
 
 fn to_immediate(s: &str, ln: usize) -> Result<u16, ParseError> {
-    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Invalid immediate: '{}'. Immediate value must be a number between 0 and 65535.", s), ln))?;
-    Ok(value)
-} 
+    parse_number(s)
+        .and_then(|v| u16::try_from(v).ok())
+        .ok_or_else(|| ParseError::new(
+            format!("Invalid immediate: '{}'. Must be between 0 and 65535 (dec, 0b..., or 0x...).", s), ln
+        ))
+}
 
 fn to_offset(s: &str, ln: usize) -> Result<u8, ParseError> {
-    let value = s.parse::<u8>().map_err(|_| ParseError::new(format!("Invalid offset: '{}'. Offset value must be a number between 0 and {}.", s, hardware::MAX_MEMORY_OFFSET), ln))?;
-    Ok(value)
+    parse_number(s)
+        .and_then(|v| u8::try_from(v).ok())
+        .filter(|&v| v <= hardware::MAX_MEMORY_OFFSET as u8)
+        .ok_or_else(|| ParseError::new(
+            format!("Invalid offset: '{}'. Must be between 0 and {} (dec, 0b..., or 0x...).", s, hardware::MAX_MEMORY_OFFSET), ln
+        ))
 }
 
 fn to_instr_addr(s: &str, ln: usize) -> Result<u16, ParseError> {
-    let value = s.parse::<u16>().map_err(|_| ParseError::new(format!("Invalid address: '{}'. Address value must be a number between 0 and {}.", s, hardware::INSTRUCTION_MEM_SIZE - 1), ln))?;
-    
-    if value >= hardware::INSTRUCTION_MEM_SIZE as u16 {
-        return Err(ParseError::new(format!("Address value must be a number between 0 and {}.", hardware::INSTRUCTION_MEM_SIZE - 1), ln));
-    }
-
-    Ok(value)
+    parse_number(s)
+        .and_then(|v| u16::try_from(v).ok())
+        .filter(|&v| (v as usize) < hardware::INSTRUCTION_MEM_SIZE as usize)
+        .ok_or_else(|| ParseError::new(
+            format!("Invalid address: '{}'. Must be between 0 and {} (dec, 0b..., or 0x...).", s, hardware::INSTRUCTION_MEM_SIZE - 1), ln
+        ))
 }
 
 fn to_flag(s: &str, ln: usize) -> Result<u8, ParseError> {
-    let value = match s {
-        "CF" => hardware::CARRY_FLAG_BINARY as u8,
-        "ZF" => hardware::ZERO_FLAG_BINARY as u8,
-        "OF" => hardware::OVERFLOW_FLAG_BINARY as u8,
-        _ => return Err(ParseError::new(format!("Invalid condition flag: {}. Must be one of 'CF', 'ZF', 'OF'.", s), ln)),
-    };
+    match s {
+        "carry" => Ok(hardware::CARRY_FLAG_BINARY as u8),
+        "zero"  => Ok(hardware::ZERO_FLAG_BINARY as u8),
+        _ => Err(ParseError::new(
+            format!("Invalid condition flag: '{}'. Must be 'zero' or 'carry'.", s), ln
+        )),
+    }
+}
 
-    Ok(value)
+
+fn parse_number(s: &str) -> Option<u64> {
+    if let Some(bin) = s.strip_prefix("0b") {
+        u64::from_str_radix(bin, 2).ok()
+    } else if let Some(hex) = s.strip_prefix("0x") {
+        u64::from_str_radix(hex, 16).ok()
+    } else {
+        s.parse::<u64>().ok()
+    }
 }
