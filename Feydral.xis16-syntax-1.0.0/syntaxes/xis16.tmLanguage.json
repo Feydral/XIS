@@ -5,6 +5,7 @@
   "patterns": [
     { "include": "#comments" },
     { "include": "#labels" },
+    { "include": "#defines" },
     { "include": "#flags" },
     { "include": "#instructions" },
     { "include": "#registers" },
@@ -22,18 +23,22 @@
     "labels": {
       "patterns": [
         {
-          "name": "entity.name.function.xis16",
+          "name": "entity.name.label.xis16",
           "match": "^\\.([A-Za-z_][A-Za-z0-9_]*)\\b"
         },
         {
-          "name": "entity.name.function.xis16",
+          "name": "entity.name.label.xis16",
           "match": "(?<=\\s)\\.([A-Za-z_][A-Za-z0-9_]*)\\b"
         }
       ]
     },
     "flags": {
       "name": "keyword.other.flag.xis16",
-      "match": "\\b(ZF|OF|CF)\\b"
+      "match": "\\b(zero|carry)\\b"
+    },
+    "defines": {
+      "name": "keyword.other.define.xis16",
+      "match": "^#define\\b"
     },
     "instructions": {
       "name": "keyword.control.xis16",

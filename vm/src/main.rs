@@ -7,7 +7,7 @@ mod component;
 
 pub fn main() {
     let mut window = Window::new();
-    let mut vm = Box::new(VirtualMachine::new("../xis/examples/out.c16").unwrap());
+    let mut vm = VirtualMachine::new("../xis/examples/out.c16").unwrap();
 
     while window.is_open() {
         if vm.execute_next_instruction(&mut window) {

@@ -4,7 +4,7 @@
   "author": "Feydral",
   "displayName": "Xis16 Assembly",
   "description": "Syntax Highlighting for Xis16 Assembly",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "engines": { "vscode": "^1.0.0" },
   "main": "./extension.js",
   "activationEvents": ["onStartupFinished"],

@@ -7,7 +7,7 @@ LDI r1 3
 ADD r0 r1 r4
 
 /// Register:
-/// r0: 0 (like I said)
+/// r0: 0
 /// r1: 3
 /// r2: 0
 /// r3: 0
@@ -16,7 +16,6 @@ ADD r0 r1 r4
 /// r6: 0
 /// r7: 0
 
-LDI r0 0
 LDI r1 0
 LDI r4 0
 
@@ -162,8 +161,7 @@ PSHB
 // JMP .loop
 // But this would loop forever
 
-
-// Use BRH and a condition to make a controlled loop: 
+// Use BRH and a condition (ZF for zero, CF for carry and OF for overflow) to make a controlled loop: 
 
 // For an example, loop 10 times:
 LDI r1 10
@@ -173,7 +171,7 @@ LDI r1 10
 SUBI r1 1 
 
 // Exit if 0
-BRH ZF .exit_loop_1
+BRH zero .exit_loop_1
 
 // Continue looping
 JMP .loop_1
@@ -194,7 +192,7 @@ ADDI r1 1
 // Compare r1 and r2 (by substracting) - discard the result
 SUB r2 r1 r0
 // If r1 == r2 (because if (r2 - r1 == 0) -> zero-flag: true) jump out of the loop
-BRH ZF .exit_loop_2
+BRH zero .exit_loop_2
 
 // Continue looping
 JMP .loop_2
@@ -202,5 +200,26 @@ JMP .loop_2
 
 LDI r1 0
 LDI r2 0
+
+
+
+///---------------- Definitions ----------------///
+
+// Definitions are compile-constant aliases for values. Everywhere your use a definition, the preprocessor will replace it with its value. 
+
+#define red 3840
+#define pixel_pos_x 10
+#define pixel_pos_y 10
+
+LDI r1 red
+LDI r2 pixel_pos_x
+LDI r3 pixel_pos_y
+
+DRW r2 r3 r1
+PSHB
+
+.dont_close
+JMP .dont_close
+
 
 HLT // <- You dont have to stop the clock, but it will keep running until the end of the instruction memory (and execute NOPs) if the window isnt closed.

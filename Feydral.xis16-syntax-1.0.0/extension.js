@@ -7,31 +7,35 @@ const TOKEN_RULES = [
   },
   {
     scope: "variable.language.xis16",
-    settings: { foreground: "#9094e8", fontStyle: "" }
+    settings: { foreground: "#a890ee", fontStyle: "" }
   },
   {
     scope: "constant.numeric.hex.xis16",
-    settings: { foreground: "#dc6e6e", fontStyle: "" }
+    settings: { foreground: "#f78056", fontStyle: "" }
   },
   {
     scope: "constant.numeric.binary.xis16",
-    settings: { foreground: "#dc6e6e", fontStyle: "" }
+    settings: { foreground: "#f78056", fontStyle: "" }
   },
   {
     scope: "constant.numeric.decimal.xis16",
-    settings: { foreground: "#dc6e6e", fontStyle: "" }
+    settings: { foreground: "#f78056", fontStyle: "" }
   },
   {
     scope: "comment.line.double-slash.xis16",
     settings: { foreground: "#686a6c", fontStyle: "" }
   },
   {
-    scope: "entity.name.function.xis16",
-    settings: { foreground: "#e9c685", fontStyle: "bold" }
+    scope: "entity.name.label.xis16",
+    settings: { foreground: "#ffdd88", fontStyle: "italic" }
   },
   {
     scope: "keyword.other.flag.xis16",
-    settings: { foreground: "#da7dc9", fontStyle: "" }
+    settings: { foreground: "#82aaff", fontStyle: "" }
+  },
+  {
+    scope: "keyword.other.define.xis16",
+    settings: { foreground: "#82aaff", fontStyle: "" }
   }
 ];
 
