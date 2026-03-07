@@ -29,7 +29,7 @@ fn encode(instruction: &Instruction) -> u32 {
         | Instruction::RightShift { reg_a, reg_c }
         | Instruction::LeftShift { reg_a, reg_c } => {
             bits |= (*reg_a as u32 & 0b111) << 16;
-            bits |= (*reg_c as u32 & 0b111) << 13;
+            bits |= (*reg_c as u32 & 0b111) << 10;
         }
 
         Instruction::LoadImmediate { reg_a, immediate }

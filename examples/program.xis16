@@ -224,17 +224,19 @@ LDI r2 0
 
 // Nested loops are the same, although they are more complicated:
 
-// Outer loop: 0..10
+// Outer loop: 0..128
 LDI r1 0
-LDI r3 16
+LDI r3 128
 
 .loop_outer
-    // Inner loop: 0..20
+    // Inner loop: 0..128
     LDI r2 0
-    LDI r4 16
+    LDI r4 128
 
     .loop_inner
-        DRW r1 r2 r1
+        LDI r5 0xF
+        AND r1 r5 r6
+        DRW r1 r2 r6
 
         ADDI r2 1
         SUB r4 r2 r0

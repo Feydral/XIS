@@ -74,6 +74,10 @@ impl VirtualMachine {
             }
         }
 
+        for instruction in instructions.iter() {
+            println!("{:?}", instruction);
+        }
+
         Ok(Self {
             buffer: vec![0_u16; (SCREEN_WIDTH * SCREEN_HEIGHT) as usize],
 

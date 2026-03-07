@@ -34,6 +34,13 @@ pub fn compile(input: Vec<String>, format: OutputFormat) -> Vec<Result<String, B
         output.push(result);
     }
     
+    for line in output.iter() {
+        match line {
+            Ok(s) => println!("{}", s),
+            _ => {}
+        }
+    }
+
     output
 }
 
