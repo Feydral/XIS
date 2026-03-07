@@ -74,10 +74,6 @@ impl VirtualMachine {
             }
         }
 
-        for instruction in instructions.iter() {
-            println!("{:?}", instruction);
-        }
-
         Ok(Self {
             buffer: vec![0_u16; (SCREEN_WIDTH * SCREEN_HEIGHT) as usize],
 
@@ -228,8 +224,8 @@ impl VirtualMachine {
             }
 
             Instruction::Call { address } => {
+                self.call_stack.push(self.pc);
                 self.pc = address;
-                self.call_stack.push(address + 1);
             }
 
             Instruction::Return => {
@@ -237,7 +233,7 @@ impl VirtualMachine {
             }
 
             Instruction::MemoryLoad { reg_a, reg_b, offset } => {
-                let address = self.register_file[reg_a.into()].wrapping_add(offset as u16) as usize;
+                let address = (self.register_file[reg_a.into()] + offset as u16) as usize % 1024;
                 self.register_file[reg_b.into()] = self.memory[address];
             }
 
@@ -262,13 +258,35 @@ impl VirtualMachine {
                 self.buffer.fill(0);
             }
 
-            Instruction::ControllerPad { reg_a } => {
-                let _ = reg_a;
-                todo!();
+            Instruction::ControllerPad { reg_c } => {
+                use minifb::Key;
+
+                let keys = window.get_keys();
+                let mut bits: u16 = 0;
+
+                let mappings: &[(Key, u16)] = &[
+                    (Key::W,         1 << 0),
+                    (Key::A,         1 << 1),
+                    (Key::S,         1 << 2),
+                    (Key::D,         1 << 3),
+                    (Key::Space,     1 << 4),
+                    (Key::LeftShift, 1 << 5),
+                    (Key::LeftCtrl,  1 << 6),
+                    (Key::R,         1 << 7),
+                    (Key::F,         1 << 8),
+                ];
+
+                for (key, bit) in mappings {
+                    if keys.contains(key) {
+                        bits |= bit;
+                    }
+                }
+            
+                self.register_file[reg_c.into()] = bits;
             }
 
-            Instruction::RandomNumberGenerator { reg_a } => {
-                let mut x = (self.pc as u32) ^ ((reg_a as u32) << 16) ^ (self.register_file[reg_a.into()] as u32);
+            Instruction::RandomNumberGenerator { reg_c } => {
+                let mut x = (self.pc as u32) ^ ((reg_c as u32) << 16) ^ (self.register_file[reg_c.into()] as u32);
 
                 x = x.wrapping_add(0x9E3779B9);
                 x ^= x >> 16;
@@ -277,7 +295,7 @@ impl VirtualMachine {
                 x = x.wrapping_mul(0xC2B2AE35);
                 x ^= x >> 16;
 
-                self.register_file[reg_a.into()] = (x & 0xFFFF) as u16;
+                self.register_file[reg_c.into()] = (x & 0xFFFF) as u16;
             }
         }
 

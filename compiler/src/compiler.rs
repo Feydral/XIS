@@ -1,5 +1,7 @@
 use std::error::Error;
 
+use common::hardware;
+
 use crate::{code_gen, parser, preprocessor};
 
 pub fn compile(input: Vec<String>, format: OutputFormat) -> Vec<Result<String, Box<dyn Error>>> {
@@ -33,14 +35,8 @@ pub fn compile(input: Vec<String>, format: OutputFormat) -> Vec<Result<String, B
         };
         output.push(result);
     }
-    
-    for line in output.iter() {
-        match line {
-            Ok(s) => println!("{}", s),
-            _ => {}
-        }
-    }
 
+    println!("Used {} instruction addresses ({}%)", output.len(),  output.len() as f32 / hardware::INSTRUCTION_MEM_SIZE as f32 * 100.0);
     output
 }
 

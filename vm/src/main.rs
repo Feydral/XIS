@@ -10,8 +10,10 @@ pub fn main() {
     let mut vm = VirtualMachine::new("../xis/examples/out.c16").unwrap();
 
     while window.is_open() {
-        if vm.execute_next_instruction(&mut window) {
-            return;
+        for _ in 0..100 {
+            if vm.execute_next_instruction(&mut window) {
+                return;
+            }
         }
         window.update_buffer();
     }

@@ -200,13 +200,13 @@ pub fn parse_line(line: String, ln: usize) -> Result<Instruction, Box<dyn Error>
             if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register as operand.", split[0], split[0]), ln)));
             }
-            Instruction::ControllerPad { reg_a: to_reg(split[1], ln)? } 
+            Instruction::ControllerPad { reg_c: to_reg(split[1], ln)? } 
         },
         "RNG" => { 
             if !(!split[1].is_empty() && split[2].is_empty() && split[3].is_empty()) {
                 return Err(Box::new(SyntaxError::new(format!("Mnemonic '{}' has wrong operands. Help: '{}' takes 1 register as operand.", split[0], split[0]), ln)));
             }
-            Instruction::RandomNumberGenerator { reg_a: to_reg(split[1], ln)? } 
+            Instruction::RandomNumberGenerator { reg_c: to_reg(split[1], ln)? } 
         },
         _ => return Err(Box::new(ParseError::new(format!("Invalid mnemonic: '{}'. Help: consider checking the xis16 spreadsheet for valid mnemonics.", split[0]), ln))),
     };
@@ -262,7 +262,6 @@ fn to_flag(s: &str, ln: usize) -> Result<u8, ParseError> {
         )),
     }
 }
-
 
 fn parse_number(s: &str) -> Option<u64> {
     if let Some(bin) = s.strip_prefix("0b") {

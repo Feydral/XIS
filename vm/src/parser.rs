@@ -69,8 +69,8 @@ pub fn parse_binary_line(line: &str, ln: usize) -> Result<Instruction, Box<dyn E
         OPCODE_MSTR => { Instruction::MemoryStore { reg_a, reg_b, offset } }
         OPCODE_DRW  => { Instruction::Draw { reg_x: reg_a, reg_y: reg_b, reg_rgb: reg_c } }
         OPCODE_PSHB => { Instruction::PushBuffer { } }
-        OPCODE_PAD  => { Instruction::ControllerPad { reg_a } }
-        OPCODE_RNG  => { Instruction::RandomNumberGenerator { reg_a } }
+        OPCODE_PAD  => { Instruction::ControllerPad { reg_c } }
+        OPCODE_RNG  => { Instruction::RandomNumberGenerator { reg_c } }
         _ => unreachable!()
     };
 

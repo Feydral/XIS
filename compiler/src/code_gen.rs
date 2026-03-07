@@ -64,9 +64,9 @@ fn encode(instruction: &Instruction) -> u32 {
             bits |= (*reg_rgb as u32 & 0b111) << 10;
         }
 
-        Instruction::ControllerPad { reg_a }
-        | Instruction::RandomNumberGenerator { reg_a } => {
-            bits |= (*reg_a as u32 & 0b111) << 16;
+        Instruction::ControllerPad { reg_c }
+        | Instruction::RandomNumberGenerator { reg_c } => {
+            bits |= (*reg_c as u32 & 0b111) << 16;
         }
 
         Instruction::NoOperation
@@ -156,7 +156,7 @@ pub fn to_assembly_string(instruction: &Instruction) -> String {
         Instruction::MemoryStore { reg_a, reg_b, offset } => format!("MSTR r{} r{} {}", reg_a, reg_b, offset),
         Instruction::Draw { reg_x, reg_y, reg_rgb } => format!("DRW r{} r{} r{}", reg_x, reg_y, reg_rgb),
         Instruction::PushBuffer => "PSHB".to_string(),
-        Instruction::ControllerPad { reg_a } => format!("PAD r{}", reg_a),
-        Instruction::RandomNumberGenerator { reg_a } => format!("RNG r{}", reg_a),
+        Instruction::ControllerPad { reg_c } => format!("PAD r{}", reg_c),
+        Instruction::RandomNumberGenerator { reg_c } => format!("RNG r{}", reg_c),
     }
 }   

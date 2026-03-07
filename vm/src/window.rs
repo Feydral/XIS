@@ -11,7 +11,7 @@ impl Window {
     pub const WINDOW_WIDTH: u32 = 768;
     pub const WINDOW_HEIGHT: u32 = 768;
 
-    const TARGET_FPS: u32 = 0;
+    const TARGET_FPS: u32 = 120;
 
     const WINDOW_OPTIONS: WindowOptions = WindowOptions {
         scale: minifb::Scale::X1,
@@ -64,5 +64,9 @@ impl Window {
 
             self.buffer[index] = ((r8 as u32) << 16) | ((g8 as u32) << 8) | (b8 as u32);
         }
+    }
+
+    pub fn get_keys(&self) -> Vec<minifb::Key> {
+        self.native_window.get_keys()
     }
 }
